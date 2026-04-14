@@ -80,7 +80,7 @@ include 'includes/sidebar.php';
     <?php endif; ?>
 
     <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-        <button class="btn-add" onclick="toggleModal('modalAdd')">➕ Nouvel Étudiant</button>
+        <button class="btn-add" onclick="toggleModal('modalAdd')"><i class="fa-solid fa-plus"></i> Nouvel Étudiant</button>
         <div class="badge" style="background: #2c3e80; color: white;">Total : <?= count($etudiants) ?> étudiants</div>
     </div>
 
@@ -90,8 +90,8 @@ include 'includes/sidebar.php';
                 <tr>
                     <th>Id</th>
                     <th>Matricule</th>
-                    <th>Nom & Prénom</th>
-                    <th>Section</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
                     <th>M1 (S1)</th>
                     <th>M2 (S2)</th>
                     <th>Moyenne</th>
@@ -115,25 +115,25 @@ include 'includes/sidebar.php';
                 ?>
                 <tr>
                     <td><?= $e['id'] ?></td>
-                    <td><span class="badge-code"><?= htmlspecialchars($e['matricule']) ?></span></td>
-                    <td><strong><?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?></strong></td>
-                    <td style="text-align: center;"><span class="badge" style="background:#e8ecf5; color:#2c3e80;">Sec <?= $e['section'] ?></span></td>
+                    <td><?= htmlspecialchars($e['matricule']) ?></td>
+                    <td><?= htmlspecialchars($e['nom']) ?></td>
+                    <td><?= htmlspecialchars($e['prenom']) ?></td>
                     <td style="text-align: center;"><?= ($m1 !== null) ? $m1 : '-' ?></td>
                     <td style="text-align: center;"><?= ($m2 !== null) ? $m2 : '-' ?></td>
-                    <td style="text-align: center; font-weight: bold; color: #2c3e80;"><?= ($annuelle !== null) ? $annuelle : '-' ?></td>
-                    <td><span class="badge <?= $status_class ?>"><?= $status_text ?></span></td>
+                    <td style="text-align: center; font-weight: bold;"><?= ($annuelle !== null) ? $annuelle : '-' ?></td>
+                    <td><?= $status_text ?></td>
                     <td>
                         <div style="display:flex; gap:5px; justify-content: center;">
-                            <a href="releve_notes.php?id=<?= $e['id'] ?>" class="btn-action" title="Relevé">📄</a>
+                            <a href="releve_notes.php?id=<?= $e['id'] ?>" class="btn-action" title="Relevé"><i class="fa-solid fa-file-invoice"></i></a>
                             <form method="POST" style="display: inline;" onsubmit="return confirm('Supprimer cet étudiant ?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= $e['id'] ?>">
-                                <button type="submit" class="btn-action delete" title="Supprimer">❌</button>
+                                <button type="submit" class="btn-action delete" title="Supprimer"><i class="fa-solid fa-trash-can"></i></button>
                             </form>
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        <span style="display: inline-block; width: 15px; height: 15px; border-radius: 50%; background: <?= $etat_color ?>; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); vertical-align: middle;" title="<?= $e['nb_notes'] > 0 ? 'Dossier complet' : 'Dossier vide' ?>"></span>
+                        <span style="display: inline-block; width: 15px; height: 15px; border-radius: 50%; background: <?= $etat_color ?>; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); vertical-align: middle;"></span>
                     </td>
                 </tr>
                 <?php endforeach; ?>

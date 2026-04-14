@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <!-- Logo Officiel USTHB -->
     <div class="auth-logo">
-        <img src="https://upload.wikimedia.org/wikipedia/fr/5/52/USTHB_Logo.png" alt="USTHB Logo" class="official-logo-main">
+        <img src="assets/img/logo.png" alt="USTHB Logo" class="official-logo-main">
         <h1>Scolarité USTHB</h1>
         <p>Faculté d'Informatique</p>
     </div>

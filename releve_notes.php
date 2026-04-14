@@ -47,7 +47,9 @@ foreach ($all_notes as $n) {
 <head>
     <meta charset="UTF-8">
     <title>Relevé de Notes - USTHB - <?= htmlspecialchars($etudiant['nom']) ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Outfit', sans-serif; background: #f4f7f6; padding: 30px; color: #333; }
         .releve-paper { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 10px; border-top: 5px solid #2c3e80; position: relative; }
@@ -65,19 +67,43 @@ foreach ($all_notes as $n) {
         .student-box p { margin: 5px 0; font-size: 14px; }
         .student-box strong { color: #2c3e80; }
 
-        /* Tableaux par semestre */
-        .semestre-title { background: #2c3e80; color: white; padding: 8px 15px; border-radius: 5px; margin: 25px 0 10px; font-size: 16px; font-weight: 600; display: inline-block; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        th { background: #f1f5f9; color: #2c3e80; font-weight: 600; text-align: left; padding: 12px; border: 1px solid #cbd5e1; font-size: 13px; text-transform: uppercase; }
-        td { padding: 12px; border: 1px solid #e2e8f0; font-size: 13px; }
-        tr:nth-child(even) { background: #fbfcfe; }
+        /* Tableaux officiels style */
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 2px;
+            border: 1px solid #000;
+            margin-bottom: 15px; 
+            background: #fff;
+        }
+        th { 
+            background: #fff; 
+            color: #000; 
+            font-weight: 700; 
+            text-align: center; 
+            padding: 10px; 
+            border: 1px solid #000; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+        }
+        td { 
+            padding: 10px; 
+            border: 1px solid #333; 
+            font-size: 12px; 
+            color: #000;
+        }
+        tr:nth-child(even) { background: #fff; }
         
-        .result-row { background: #f1f5f9 !important; font-weight: 700; color: #2c3e80; }
+        .result-row td { 
+            background: #f8fafc !important; 
+            font-weight: 700; 
+            border: 2px solid #000;
+        }
         
         /* Résumé final */
-        .final-summary { margin-top: 40px; padding: 25px; border: 2px solid #2c3e80; border-radius: 10px; background: #f0f4f8; display: flex; justify-content: space-between; align-items: center; }
-        .final-summary .decision { font-size: 20px; font-weight: 700; color: #2c3e80; }
-        .final-summary .statut-badge { padding: 8px 20px; border-radius: 5px; color: white; font-weight: 600; font-size: 16px; }
+        .final-summary { margin-top: 40px; padding: 25px; border: 2px solid #000; border-radius: 4px; background: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .final-summary .decision { font-size: 18px; font-weight: 700; color: #000; }
+        .final-summary .statut-badge { padding: 8px 15px; border-radius: 4px; border: 2px solid #000; color: #000; font-weight: 700; font-size: 16px; }
         .statut-admis { background: #28a745; }
         .statut-ajourne { background: #dc3545; }
 

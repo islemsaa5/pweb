@@ -2,61 +2,46 @@
 require_once 'config.php';
 requireLogin();
 
-// Seul l'admin a accès à cette page
 if ($_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit;
 }
 
-$page_title = 'Interface Gestion des Modules';
-$message = '';
-$error = '';
+$page_title = 'Gestion des Modules par Semestre';
+$message = ''; $error = '';
 
-// --- TRAITEMENT DU FORMULAIRE D'AJOUT/AFFECTATION ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // AJOUT D'UN MODULE
     if ($action === 'add') {
         $code = clean($_POST['code_module']);
         $intitule = clean($_POST['intitule']);
-        $coefficient = (int)$_POST['coefficient'];
+        $coeff = (int)$_POST['coefficient'];
+        $semestre = (int)$_POST['semestre'];
+        $credits = (int)$_POST['credits'];
+        $section = clean($_POST['section']);
         $enseignant_id = !empty($_POST['enseignant_id']) ? (int)$_POST['enseignant_id'] : null;
-        
-        // Champs additionnels conservés en arrière-plan (facultatif selon l'énoncé)
-        $section = clean($_POST['section'] ?? 'A');
-        $semestre = (int)($_POST['semestre'] ?? 1);
-        $credits = (int)($_POST['credits'] ?? 3);
 
-        if (empty($code) || empty($intitule) || $coefficient < 1) {
-            $error = 'Le code, l\'intitulé et le coefficient sont obligatoires.';
+        if (empty($code) || empty($intitule)) {
+            $error = 'Le code et l\'intitulé sont obligatoires.';
         } else {
             try {
                 $stmt = $pdo->prepare("INSERT INTO modules (code_module, intitule, coefficient, credits, semestre, section, enseignant_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$code, $intitule, $coefficient, $credits, $semestre, $section, $enseignant_id]);
-                $message = "Module créé et enseignant affecté avec succès !";
-            } catch (PDOException $e) {
-                $error = "Ce code module existe déjà ou une erreur SQL est survenue.";
-            }
+                $stmt->execute([$code, $intitule, $coeff, $credits, $semestre, $section, $enseignant_id]);
+                $message = "Module pour le Semestre $semestre ajouté.";
+            } catch (PDOException $e) { $error = "Erreur : " . $e->getMessage(); }
         }
     }
-    // SUPPRESSION D'UN MODULE
     elseif ($action === 'delete') {
-        $id = (int)$_POST['id'];
+        $id = (int) $_POST['id'];
         $pdo->prepare("DELETE FROM modules WHERE id = ?")->execute([$id]);
-        $message = "Le module a été supprimé.";
+        $message = "Module supprimé.";
     }
 }
 
-// Récupérer la liste des modules avec l'enseignant responsable (conformément au point 5)
-$modules = $pdo->query("
-    SELECT m.*, e.nom as ens_nom, e.prenom as ens_prenom 
-    FROM modules m 
-    LEFT JOIN enseignants e ON m.enseignant_id = e.id
-    ORDER BY m.intitule
-")->fetchAll();
-
-// Liste des enseignants pour le formulaire
+// Récupérer et classer par semestre avec infos prof
+$modules_s1 = $pdo->query("SELECT m.*, e.nom, e.prenom, e.specialite FROM modules m LEFT JOIN enseignants e ON m.enseignant_id = e.id WHERE m.semestre = 1 ORDER BY m.intitule")->fetchAll();
+$modules_s2 = $pdo->query("SELECT m.*, e.nom, e.prenom, e.specialite FROM modules m LEFT JOIN enseignants e ON m.enseignant_id = e.id WHERE m.semestre = 2 ORDER BY m.intitule")->fetchAll();
 $enseignants = $pdo->query("SELECT id, nom, prenom FROM enseignants ORDER BY nom")->fetchAll();
 
 include 'includes/header.php';
@@ -65,113 +50,81 @@ include 'includes/sidebar.php';
 
 <div class="main-content">
     <div class="page-header">
-        <h1>Gestion des Modules</h1>
-        <p>Interface d'administration du programme pédagogique</p>
+        <h1>Programmation Pédagogique</h1>
+        <p>Organisation des modules par semestre</p>
     </div>
 
-    <?php if ($message): ?><div class="msg-success animate-pop"><?= $message ?></div><?php endif; ?>
-    <?php if ($error): ?><div class="msg-error animate-pop"><?= $error ?></div><?php endif; ?>
+    <?php if ($message): ?><div class="msg-success"><?= $message ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="msg-error"><?= $error ?></div><?php endif; ?>
 
     <div style="margin-bottom: 20px;">
-        <button class="btn-add" onclick="toggleModal('modalAdd')">➕ Ajouter un Module</button>
+        <button class="btn-add" onclick="toggleModal('modalAdd')"><i class="fa-solid fa-plus"></i> Ajouter un Module</button>
     </div>
 
-    <!-- Affichage des modules sous forme de cartes structurées -->
-    <div class="modules-grid">
-        <?php foreach ($modules as $m): ?>
-        <div class="module-card glass-effect" style="border-left: 5px solid #2c3e80;">
-            <p style="font-size: 11px; color:#888; margin-bottom: 5px;">Section <?= $m['section'] ?> | Semestre <?= $m['semestre'] ?></p>
-            <h4 style="color: #2c3e80; font-size: 16px; margin-bottom: 8px;"><?= htmlspecialchars($m['intitule']) ?></h4>
-            <div style="font-size: 13px; line-height: 1.6;">
-                <p><strong>Code:</strong> <span class="badge-code"><?= htmlspecialchars($m['code_module']) ?></span></p>
-                <p><strong>Coefficient:</strong> <?= $m['coefficient'] ?></p>
-                <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">
-                    <p style="color: #555;"><strong>🎓 Enseignant responsable :</strong></p>
-                    <p style="color: #2c3e80; font-weight: bold;">
-                        <?= $m['enseignant_id'] ? htmlspecialchars($m['ens_nom'] . ' ' . $m['ens_prenom']) : '<span style="color:#f0ad4e;">Non affecté</span>' ?>
-                    </p>
-                </div>
-            </div>
-            
-            <div class="actions" style="margin-top: 15px;">
-                <form method="POST" onsubmit="return confirm('Supprimer ce module ?');">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="<?= $m['id'] ?>">
-                    <button class="btn-action delete" style="width: 100%;">Supprimer le module</button>
-                </form>
-            </div>
+    <?php foreach ([1 => $modules_s1, 2 => $modules_s2] as $num => $list): ?>
+        <h2 style="margin: 30px 0 15px; color: #2c3e80; border-left: 4px solid #2c3e80; padding-left: 10px;">Semestre <?= $num ?></h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Intitulé du Module</th>
+                        <th>Section</th>
+                        <th>Coeff</th>
+                        <th>Crédits</th>
+                        <th>Enseignant Responsable</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($list as $m): ?>
+                    <tr>
+                        <td style="text-align: center;"><span class="badge-code"><?= htmlspecialchars($m['code_module']) ?></span></td>
+                        <td><strong><?= htmlspecialchars($m['intitule']) ?></strong></td>
+                        <td style="text-align: center;">Sec <?= $m['section'] ?></td>
+                        <td style="text-align: center;"><?= $m['coefficient'] ?></td>
+                        <td style="text-align: center;"><?= $m['credits'] ?></td>
+                        <td>
+                            <?php if ($m['enseignant_id']): ?>
+                                <strong>Prof. <?= htmlspecialchars($m['nom'] . ' ' . $m['prenom']) ?></strong><br>
+                                <small style="color: #666; font-style: italic;"><?= htmlspecialchars($m['specialite']) ?></small>
+                            <?php else: ?>
+                                <span style="color:#d9534f; font-style:italic;">Non affecté</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <form method="POST" onsubmit="return confirm('Supprimer ce module ?');" style="display: flex; justify-content: center;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?= $m['id'] ?>">
+                                <button type="submit" class="btn-action delete" style="padding: 5px 10px;"><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($list)): ?>
+                        <tr><td colspan="7" class="empty-row">Aucun module pour le S<?= $num ?></td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-        <?php endforeach; ?>
-    </div>
-
-    <?php if(empty($modules)): ?>
-        <div class="empty-row" style="text-align: center; margin-top: 50px;">Aucun module disponible.</div>
-    <?php endif; ?>
+    <?php endforeach; ?>
 </div>
 
-<!-- Modal conforme à l'énoncé (Point 5) -->
 <div class="modal-overlay" id="modalAdd" style="display: none;">
-    <div class="modal animate-pop">
-        <div class="modal-header">
-            <h3>Configuration du Module</h3>
-            <button class="modal-close" onclick="toggleModal('modalAdd')">&times;</button>
-        </div>
+    <div class="modal">
+        <div class="modal-header"><h3>Nouveau Module</h3><button class="modal-close" onclick="toggleModal('modalAdd')">&times;</button></div>
         <form method="POST">
             <div class="modal-body">
                 <input type="hidden" name="action" value="add">
-                
-                <div class="form-group">
-                    <label>Code module *</label>
-                    <input type="text" name="code_module" placeholder="ex: PWEB" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Intitulé du module *</label>
-                    <input type="text" name="intitule" placeholder="ex: Programmation Web" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Coefficient *</label>
-                        <input type="number" name="coefficient" min="1" max="10" value="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Section (Optionnel)</label>
-                        <select name="section">
-                            <option value="A">Section A</option>
-                            <option value="B">Section B</option>
-                            <option value="C" selected>Section C</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Enseignant responsable</label>
-                    <select name="enseignant_id">
-                        <option value="">-- Aucun enseignant affecté --</option>
-                        <?php foreach ($enseignants as $e): ?>
-                        <option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Champs cachés pour compatibilité avec le reste du système USTHB -->
-                <input type="hidden" name="credits" value="3">
-                <input type="hidden" name="semestre" value="1">
+                <div class="form-row"><div class="form-group"><label>Code *</label><input type="text" name="code_module" required></div><div class="form-group"><label>Intitulé *</label><input type="text" name="intitule" required></div></div>
+                <div class="form-row"><div class="form-group"><label>Semestre</label><select name="semestre"><option value="1">Semestre 1</option><option value="2">Semestre 2</option></select></div><div class="form-group"><label>Section</label><select name="section"><option value="A">Section A</option><option value="B">Section B</option><option value="C" selected>Section C</option></select></div></div>
+                <div class="form-row"><div class="form-group"><label>Coeff</label><input type="number" name="coefficient" value="1" min="1"></div><div class="form-group"><label>Credits</label><input type="number" name="credits" value="3" min="1"></div></div>
+                <div class="form-group"><label>Enseignant</label><select name="enseignant_id"><option value="">-- Aucun --</option><?php foreach ($enseignants as $e): ?><option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nom'].' '.$e['prenom']) ?></option><?php endforeach; ?></select></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" onclick="toggleModal('modalAdd')">Annuler</button>
-                <button type="submit" class="btn-add">Valider & Créer le Module</button>
-            </div>
+            <div class="modal-footer"><button type="button" class="btn-cancel" onclick="toggleModal('modalAdd')">Annuler</button><button type="submit" class="btn-add">Enregistrer</button></div>
         </form>
     </div>
 </div>
 
-<script>
-function toggleModal(id) {
-    const modal = document.getElementById(id);
-    modal.style.display = (modal.style.display === 'none') ? 'flex' : 'none';
-}
-</script>
-
+<script>function toggleModal(id){const m=document.getElementById(id);m.style.display=(m.style.display==='none')?'flex':'none';}</script>
 <?php include 'includes/footer.php'; ?>

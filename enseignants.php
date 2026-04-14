@@ -84,7 +84,7 @@ include 'includes/sidebar.php';
     <?php endif; ?>
 
     <div style="margin-bottom: 20px;">
-        <button class="btn-add" onclick="toggleModal('modalAdd')">➕ Nouvel Enseignant</button>
+        <button class="btn-add" onclick="toggleModal('modalAdd')"><i class="fa-solid fa-plus"></i> Nouvel Enseignant</button>
     </div>
 
     <div class="table-container">
@@ -113,12 +113,12 @@ include 'includes/sidebar.php';
                         <div style="display:flex; gap:5px;">
                             <button class="btn-action" style="background: #28a745; color:white; border:none;" 
                                     onclick="openAssignModal(<?= $e['id'] ?>, '<?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?>')">
-                                📖 Affecter
+                                <i class="fa-solid fa-book-open"></i> Affecter
                             </button>
                             <form method="POST" style="display:inline;" onsubmit="return confirm('Supprimer cet enseignant ?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= $e['id'] ?>">
-                                <button class="btn-action delete">❌</button>
+                                <button class="btn-action delete"><i class="fa-solid fa-trash-can"></i></button>
                             </form>
                         </div>
                     </td>

@@ -86,23 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
-        <!-- Selection du role -->
-        <div class="form-group">
-            <label>Vous etes :</label>
-            <div class="role-select">
-                <label>
-                    <input type="radio" name="role" value="admin" <?= (isset($role) && $role === 'admin') ? 'checked' : '' ?>>
-                    <span>Administrateur</span>
-                </label>
-                <label>
-                    <input type="radio" name="role" value="enseignant" <?= (isset($role) && $role === 'enseignant') ? 'checked' : '' ?>>
-                    <span>Enseignant</span>
-                </label>
-                <label>
-                    <input type="radio" name="role" value="etudiant" <?= (isset($role) && $role === 'etudiant') ? 'checked' : '' ?>>
-                    <span>Etudiant</span>
-                </label>
-            </div>
+        <!-- Sélection du rôle (Menu déroulant pour compatibilité max) -->
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="role" style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; text-align: left;">Je suis :</label>
+            <select name="role" id="role" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 14px; color: #1e293b; cursor: pointer;" required>
+                <option value="etudiant" <?= (!isset($role) || $role === 'etudiant') ? 'selected' : '' ?>>Étudiant (ali.karim@etud.usthb.dz)</option>
+                <option value="enseignant" <?= (isset($role) && $role === 'enseignant') ? 'selected' : '' ?>>Enseignants (laachemi@usthb.dz)</option>
+                <option value="admin" <?= (isset($role) && $role === 'admin') ? 'selected' : '' ?>>Administrateur (admin@usthb.dz)</option>
+            </select>
         </div>
 
         <div class="form-group">

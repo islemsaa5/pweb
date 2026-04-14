@@ -53,9 +53,9 @@ include 'includes/sidebar.php';
                 <h3>Que souhaitez-vous faire ?</h3>
             </div>
             <div style="padding: 20px;">
-                <a href="mes_modules.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center;">Voir mes modules</a>
-                <a href="saisie_notes.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center; background-color: #5cb85c;">Saisir des notes</a>
-                <a href="liste_etudiants.php" class="btn-add" style="display: block; text-align: center; background-color: #5bc0de;">Voir la liste des etudiants</a>
+                <a href="mes_modules.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center;"><i class="fa-solid fa-book"></i> Voir mes modules</a>
+                <a href="saisie_notes.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center; background-color: #2c3e80;"><i class="fa-solid fa-pen-to-square"></i> Saisir des notes</a>
+                <a href="liste_etudiants.php" class="btn-add" style="display: block; text-align: center; background-color: #5bc0de;"><i class="fa-solid fa-users"></i> Voir la liste des etudiants</a>
             </div>
         </div>
     </div>

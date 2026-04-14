@@ -10,26 +10,20 @@ if ($_SESSION['role'] !== 'enseignant') {
 $page_title = 'Liste des Etudiants';
 $user_id = $_SESSION['user_id'];
 
-// Recuperer d'abord les IDs des modules de cet enseignant
-$mod_stmt = $pdo->prepare("SELECT id FROM modules WHERE enseignant_id = ?");
-$mod_stmt->execute([$user_id]);
-$modules_ids = $mod_stmt->fetchAll(PDO::FETCH_COLUMN);
+// Récupérer les sections dont l'enseignant est responsable
+$sec_stmt = $pdo->prepare("SELECT DISTINCT section FROM modules WHERE enseignant_id = ?");
+$sec_stmt->execute([$user_id]);
+$sections = $sec_stmt->fetchAll(PDO::FETCH_COLUMN);
 
 $etudiants = [];
-if (!empty($modules_ids)) {
-    // Si l'enseignant a des modules, trouver les eleves inscrits (ceux qui ont des notes dans ces modules)
-    $in_clause = implode(',', $modules_ids);
-    $stmt = $pdo->query("
-        SELECT DISTINCT e.* 
-        FROM etudiants e
-        JOIN notes n ON e.id = n.etudiant_id
-        WHERE n.module_id IN ($in_clause)
-        ORDER BY e.nom
-    ");
+if (!empty($sections)) {
+    $placeholders = str_repeat('?,', count($sections) - 1) . '?';
+    $stmt = $pdo->prepare("SELECT * FROM etudiants WHERE section IN ($placeholders) ORDER BY nom");
+    $stmt->execute($sections);
     $etudiants = $stmt->fetchAll();
 } else {
-    // S'il n'a pas de modules, on peut au moins lui lister tous les eleves meme s'il n'en est pas responsable (choix pedagogique simplifie)
-    $etudiants = $pdo->query("SELECT * FROM etudiants ORDER BY nom")->fetchAll();
+    // Si aucune section assignée, on ne montre rien par défaut (ou tout si vous préférez)
+    $etudiants = [];
 }
 
 include 'includes/header.php';
@@ -47,7 +41,8 @@ include 'includes/sidebar.php';
             <thead>
                 <tr>
                     <th>Matricule</th>
-                    <th>Nom & Prenom</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
                     <th>Niveau</th>
                     <th>Email</th>
                     <th>Date de Naissance</th>
@@ -56,11 +51,11 @@ include 'includes/sidebar.php';
             <tbody>
                 <?php foreach ($etudiants as $e): ?>
                 <tr>
-                    <td><span class="badge badge-code"><?= htmlspecialchars($e['matricule']) ?></span></td>
-                    <td><?= htmlspecialchars($e['nom'] . ' ' . $e['prenom']) ?></td>
+                    <td><?= htmlspecialchars($e['matricule']) ?></td>
+                    <td><?= htmlspecialchars($e['nom']) ?></td>
+                    <td><?= htmlspecialchars($e['prenom']) ?></td>
                     <td><?= htmlspecialchars($e['niveau']) ?></td>
                     <td><?= htmlspecialchars($e['email']) ?></td>
-                    <td><?= $e['date_naissance'] ? date('d/m/Y', strtotime($e['date_naissance'])) : '-' ?></td>
                 </tr>
                 <?php endforeach; ?>
                 
