@@ -4,7 +4,8 @@
 // Connexion a la base de donnees MySQL
 // ============================================
 
-$host = '127.0.0.1;port=3307';
+$host = '127.0.0.1';
+$port= 3007;
 $dbname = 'gestion_scolarite';
 $user = 'root';
 $pass = '';
