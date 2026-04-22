@@ -1,3 +1,20 @@
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
+<!-- 
+ Projet: Gestion de Scolarité USTHB
+ Équipe:
+ - SAADI Islem (232331698506)
+ - KHELLAS Maria (242431486807)
+ - ABDELLATIF Sara (242431676416)
+ - DAHMANI Anais (242431679715)
+-->
 </div> <!-- Fin de .layout -->
 
 <!-- Libs pour Export PDF -->
@@ -6,7 +23,7 @@
 <script src="assets/js/pdf-export.js"></script>
 
 <script>
-// Code Javascript simple pour les modales
+
 function toggleModal(modalId) {
     var modal = document.getElementById(modalId);
     if (modal) {
@@ -18,7 +35,6 @@ function toggleModal(modalId) {
     }
 }
 
-// Fermer les modales en cliquant a l'exterieur
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal-overlay')) {
         e.target.style.display = 'none';

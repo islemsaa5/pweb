@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -10,7 +18,6 @@ if ($_SESSION['role'] !== 'enseignant') {
 $page_title = 'Liste des Etudiants';
 $user_id = $_SESSION['user_id'];
 
-// Récupérer les sections dont l'enseignant est responsable
 $sec_stmt = $pdo->prepare("SELECT DISTINCT section FROM modules WHERE enseignant_id = ?");
 $sec_stmt->execute([$user_id]);
 $sections = $sec_stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -22,7 +29,7 @@ if (!empty($sections)) {
     $stmt->execute($sections);
     $etudiants = $stmt->fetchAll();
 } else {
-    // Si aucune section assignée, on ne montre rien par défaut (ou tout si vous préférez)
+
     $etudiants = [];
 }
 

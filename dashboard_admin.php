@@ -1,8 +1,15 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
-// Seulement l'admin a accès
 if ($_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit;
@@ -10,12 +17,10 @@ if ($_SESSION['role'] !== 'admin') {
 
 $page_title = 'Tableau de bord Admin';
 
-// 1. Récupérer les statistiques de base
 $nb_etudiants = $pdo->query("SELECT COUNT(*) FROM etudiants")->fetchColumn();
 $nb_enseignants = $pdo->query("SELECT COUNT(*) FROM enseignants")->fetchColumn();
 $nb_modules = $pdo->query("SELECT COUNT(*) FROM modules")->fetchColumn();
 
-// 2. Calculer le taux de réussite (Étudiants ayant une moyenne >= 10)
 $query_reussite = "
     SELECT COUNT(*) FROM (
         SELECT etudiant_id, AVG(note) as moyenne 
@@ -27,7 +32,6 @@ $query_reussite = "
 $nb_reussite = $pdo->query($query_reussite)->fetchColumn();
 $taux_reussite = $nb_etudiants > 0 ? round(($nb_reussite / $nb_etudiants) * 100, 1) : 0;
 
-// 3. Récupérer les derniers étudiants inscrits
 $query_derniers = "
     SELECT e.*, 
     (SELECT AVG(note) FROM notes WHERE etudiant_id = e.id) as moyenne 
@@ -105,9 +109,9 @@ include 'includes/sidebar.php';
             </div>
             <div style="padding: 20px; display: flex; flex-direction: column; gap: 15px;">
                 <a href="etudiants.php" class="btn-add" style="text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-user"></i> Profils Étudiants</a>
-                <a href="enseignants.php" class="btn-add" style="background:#5bc0de; text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-school"></i> Équipe Enseignante</a>
-                <a href="modules.php" class="btn-add" style="background:#2c3e80; text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-file-invoice"></i> Programme Modules</a>
-                <a href="notes.php" class="btn-add" style="background:#f0ad4e; text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-clipboard-list"></i> Saisie Centralisée</a>
+                <a href="enseignants.php" class="btn-add" style="text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-school"></i> Équipe Enseignante</a>
+                <a href="modules.php" class="btn-add" style="text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-file-invoice"></i> Programme Modules</a>
+                <a href="notes.php" class="btn-add" style="text-align:center; padding: 12px; font-weight: 500;"><i class="fa-solid fa-clipboard-list"></i> Saisie Centralisée</a>
             </div>
         </div>
 

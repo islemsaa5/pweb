@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -10,7 +18,6 @@ if ($_SESSION['role'] !== 'etudiant') {
 $page_title = 'Mes Notes';
 $user_id = $_SESSION['user_id'];
 
-// Recuperer les notes detaillees
 $stmt = $pdo->prepare("
     SELECT m.code_module, m.intitule, m.coefficient, n.note,
            e.nom as ens_nom, e.prenom as ens_prenom

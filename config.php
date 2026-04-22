@@ -1,11 +1,13 @@
 <?php
-// ============================================
-// Fichier de configuration
-// Connexion a la base de donnees MySQL
-// ============================================
-
-$host = '127.0.0.1';
-$port= 3007;
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
+$host = '127.0.0.1;port=3307';
 $dbname = 'gestion_scolarite';
 $user = 'root';
 $pass = '';
@@ -17,25 +19,29 @@ try {
     die("Erreur de connexion : " . $e->getMessage());
 }
 
-// Demarrer la session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Fonction pour nettoyer les donnees
 function clean($data) {
     return htmlspecialchars(strip_tags(trim($data)));
 }
 
-// Verifier si l'utilisateur est connecte
 function isLoggedIn() {
     return isset($_SESSION['user_id']) && isset($_SESSION['role']);
 }
 
-// Rediriger si non connecte
 function requireLogin() {
     if (!isLoggedIn()) {
-        header('Location: login.php');
+        header('Location: index.php');
+        exit;
+    }
+}
+
+function requireRole($role) {
+    requireLogin();
+    if ($_SESSION['role'] !== $role) {
+        header('Location: index.php');
         exit;
     }
 }

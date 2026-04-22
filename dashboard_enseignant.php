@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -10,13 +18,11 @@ if ($_SESSION['role'] !== 'enseignant') {
 $page_title = 'Tableau de bord Enseignant';
 $user_id = $_SESSION['user_id'];
 
-// Stats de l'enseignant
 $modules = $pdo->prepare("SELECT * FROM modules WHERE enseignant_id = ?");
 $modules->execute([$user_id]);
 $mes_modules = $modules->fetchAll();
 $nb_modules = count($mes_modules);
 
-// Calculer le nombre d'etudiants notes
 $nb_notes = 0;
 if ($nb_modules > 0) {
     $mod_ids = implode(',', array_column($mes_modules, 'id'));
@@ -54,8 +60,8 @@ include 'includes/sidebar.php';
             </div>
             <div style="padding: 20px;">
                 <a href="mes_modules.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center;"><i class="fa-solid fa-book"></i> Voir mes modules</a>
-                <a href="saisie_notes.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center; background-color: #2c3e80;"><i class="fa-solid fa-pen-to-square"></i> Saisir des notes</a>
-                <a href="liste_etudiants.php" class="btn-add" style="display: block; text-align: center; background-color: #5bc0de;"><i class="fa-solid fa-users"></i> Voir la liste des etudiants</a>
+                <a href="saisie_notes.php" class="btn-add" style="display: block; margin-bottom: 10px; text-align: center;"><i class="fa-solid fa-pen-to-square"></i> Saisir des notes</a>
+                <a href="liste_etudiants.php" class="btn-add" style="display: block; text-align: center;"><i class="fa-solid fa-users"></i> Voir la liste des etudiants</a>
             </div>
         </div>
     </div>

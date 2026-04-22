@@ -1,6 +1,18 @@
+﻿/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 /**
- * PDF Export Script for USTHB Scolarite
- * Uses jsPDF and jspdf-autotable
+ * Projet: Gestion de ScolaritÃ© USTHB
+ * Ã‰quipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -8,22 +20,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageHeader = document.querySelector('.page-header');
     
     const currentPage = window.location.pathname.split('/').pop();
-    
-    // Only proceed if there are tables, a header, and we are NOT on a dashboard
+
     if (tables.length > 0 && pageHeader && !currentPage.includes('dashboard')) {
-        // Create Export Button
+
         const exportBtn = document.createElement('button');
         exportBtn.className = 'btn-export';
-        exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Télécharger PDF';
-        exportBtn.style.marginLeft = 'auto'; // Push to right if header is flex
-        
-        // Create a wrapper for the existing text (h1, p) to keep them stacked
+        exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> TÃ©lÃ©charger PDF';
+        exportBtn.style.marginLeft = 'auto';
+
         const textWrapper = document.createElement('div');
         while (pageHeader.firstChild) {
             textWrapper.appendChild(pageHeader.firstChild);
         }
-        
-        // Ensure page header is flex to accommodate the button
+
         pageHeader.style.display = 'flex';
         pageHeader.style.justifyContent = 'space-between';
         pageHeader.style.alignItems = 'center';
@@ -44,16 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'pt', 'a4');
-    
-    // Title and Meta
+
     const pageTitle = document.querySelector('.page-header h1')?.innerText || 'Document';
     const subTitle = document.querySelector('.page-header p')?.innerText || '';
     const date = new Date().toLocaleDateString('fr-FR');
-    
-    // PDF Styling
+
     doc.setFontSize(18);
-    doc.setTextColor(44, 62, 128); // #2c3e80
-    doc.text('USTHB - Scolarité', 40, 40);
+    doc.setTextColor(44, 62, 128);
+    doc.text('USTHB - ScolaritÃ©', 40, 40);
     
     doc.setFontSize(14);
     doc.setTextColor(33, 33, 33);
@@ -66,14 +73,13 @@ function exportToPDF() {
     }
     
     doc.setFontSize(9);
-    doc.text(`Généré le: ${date}`, 480, 40);
+    doc.text(`GÃ©nÃ©rÃ© le: ${date}`, 480, 40);
     
     let currentY = 110;
-    
-    // Export each table found on page
+
     const tables = document.querySelectorAll('table');
     tables.forEach((table, index) => {
-        // Table Title Detection
+
         let tableTitle = '';
         const container = table.closest('.table-container');
         const containerHeader = container?.querySelector('.table-header h3');
@@ -92,50 +98,49 @@ function exportToPDF() {
             currentY += 15;
         }
 
-        // Identify columns to skip (Actions, Etat, etc.)
         const headers = Array.from(table.querySelectorAll('thead th'));
         const columnsToSkip = headers
-            .map((th, i) => (['actions', 'état', 'etat', 'delete', 'modifier'].includes(th.innerText.toLowerCase().trim()) ? i : -1))
+            .map((th, i) => (['actions', 'Ã©tat', 'etat', 'delete', 'modifier'].includes(th.innerText.toLowerCase().trim()) ? i : -1))
             .filter(i => i !== -1);
 
         doc.autoTable({
             html: table,
             startY: currentY,
-            theme: 'grid', // This adds borders to all cells
+            theme: 'grid',
             styles: {
                 fontSize: 9,
                 cellPadding: 6,
                 font: 'helvetica',
                 textColor: [0, 0, 0],
-                lineColor: [0, 0, 0], // Black borders
+                lineColor: [0, 0, 0],
                 lineWidth: 0.8,
             },
             headStyles: {
-                fillColor: [255, 255, 255], // White header
-                textColor: [0, 0, 0], // Black text
+                fillColor: [255, 255, 255],
+                textColor: [0, 0, 0],
                 fontStyle: 'bold',
                 lineWidth: 0.8,
                 lineColor: [0, 0, 0]
             },
             alternateRowStyles: {
-                fillColor: [255, 255, 255] // No stripes
+                fillColor: [255, 255, 255]
             },
             margin: { left: 40, right: 40 },
             columns: headers.length > 0 ? Array.from({length: headers.length}, (_, i) => i).filter(i => !columnsToSkip.includes(i)) : null,
             didPageHtmlData: true,
             didDrawPage: function(data) {
-                // Add footer to each page
+
                 doc.setFontSize(8);
                 doc.setTextColor(150);
                 doc.text('Page ' + doc.internal.getNumberOfPages(), data.settings.margin.left, doc.internal.pageSize.height - 20);
-                doc.text('USTHB Scolarité - Document Officiel', 400, doc.internal.pageSize.height - 20);
+                doc.text('USTHB ScolaritÃ© - Document Officiel', 400, doc.internal.pageSize.height - 20);
             }
         });
         
         currentY = doc.lastAutoTable.finalY + 40;
     });
-    
-    // Save the PDF
+
     const filename = pageTitle.toLowerCase().replace(/\s+/g, '_') + '.pdf';
     doc.save(filename);
 }
+

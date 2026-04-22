@@ -1,5 +1,12 @@
-<?php
-// includes/header.php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 if (!isset($page_title)) {
     $page_title = "Accueil";
 }

@@ -1,8 +1,27 @@
-/* ============================================
-   Style principal - Gestion Scolarite USTHB
-   ============================================ */
+﻿/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 
-/* Reset de base */
+
+:root {
+    --primary-color: #374151; 
+    --primary-dark: #1f2937;
+    --sidebar-bg: #262626;  
+    --bg-light: #ffffff;
+    --bg-body: #f3f4f6;    
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --accent-gray: #d1d5db;
+    --valid-green: #059669; 
+    --invalid-red: #dc2626;   
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -11,24 +30,24 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f8fafc;
-    color: #1e293b;
+    background-color: var(--bg-body);
+    color: var(--text-main);
     font-size: 14px;
     line-height: 1.5;
 }
 
 a {
     text-decoration: none;
-    color: #2c3e80;
+    color: var(--primary-color);
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-/* ---- Header / Barre de navigation ---- */
+
 .navbar {
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     padding: 0 20px;
     display: flex;
@@ -45,7 +64,7 @@ a:hover {
 .navbar .logo span {
     font-weight: normal;
     font-size: 13px;
-    color: #b0b8d1;
+    color: var(--accent-gray);
 }
 
 .navbar ul {
@@ -63,20 +82,20 @@ a:hover {
 
 .navbar ul li a:hover,
 .navbar ul li a.active {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     text-decoration: none;
 }
 
-/* ---- Page d'accueil ---- */
+
 .hero {
     text-align: center;
     padding: 60px 20px;
-    background-color: #e8ecf5;
+    background-color: var(--bg-body);
 }
 
 .hero h1 {
     font-size: 28px;
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 10px;
 }
 
@@ -89,7 +108,7 @@ a:hover {
 
 .hero .btn {
     display: inline-block;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 30px;
     border-radius: 4px;
@@ -97,11 +116,11 @@ a:hover {
 }
 
 .hero .btn:hover {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     text-decoration: none;
 }
 
-/* Section fonctionnalites */
+
 .features {
     max-width: 900px;
     margin: 40px auto;
@@ -110,7 +129,7 @@ a:hover {
 
 .features h2 {
     text-align: center;
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 25px;
     font-size: 22px;
 }
@@ -130,7 +149,7 @@ a:hover {
 }
 
 .feature-card h3 {
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 8px;
     font-size: 15px;
 }
@@ -141,7 +160,7 @@ a:hover {
     line-height: 1.5;
 }
 
-/* Section roles */
+
 .roles {
     max-width: 900px;
     margin: 40px auto;
@@ -150,7 +169,7 @@ a:hover {
 
 .roles h2 {
     text-align: center;
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 25px;
     font-size: 22px;
 }
@@ -170,7 +189,7 @@ a:hover {
 }
 
 .role-card h3 {
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 10px;
 }
 
@@ -188,35 +207,35 @@ a:hover {
 
 .role-card ul li::before {
     content: "- ";
-    color: #2c3e80;
+    color: var(--primary-color);
 }
 
 .role-card .btn-small {
     display: inline-block;
     padding: 6px 18px;
-    border: 1px solid #2c3e80;
-    color: #2c3e80;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
     border-radius: 4px;
     font-size: 13px;
 }
 
 .role-card .btn-small:hover {
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     text-decoration: none;
 }
 
-/* ---- Footer ---- */
+
 .footer {
     text-align: center;
     padding: 20px;
-    background-color: #2c3e80;
-    color: #b0b8d1;
+    background-color: var(--primary-color);
+    color: var(--accent-gray);
     font-size: 12px;
     margin-top: 40px;
 }
 
-/* ---- Page Login ---- */
+
 .login-container {
     max-width: 400px;
     margin: 60px auto;
@@ -228,7 +247,7 @@ a:hover {
 
 .login-container h2 {
     text-align: center;
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 20px;
 }
 
@@ -258,13 +277,13 @@ a:hover {
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #2c3e80;
+    border-color: var(--primary-color);
 }
 
 .btn-submit {
     width: 100%;
     padding: 10px;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -273,10 +292,10 @@ a:hover {
 }
 
 .btn-submit:hover {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
 }
 
-/* Role radio buttons */
+
 .role-select {
     display: flex;
     gap: 10px;
@@ -298,16 +317,16 @@ a:hover {
 }
 
 .role-select input[type="radio"]:checked + span {
-    color: #2c3e80;
+    color: var(--primary-color);
     font-weight: bold;
 }
 
 .role-select label:has(input:checked) {
-    border-color: #2c3e80;
-    background-color: #e8ecf5;
+    border-color: var(--primary-color);
+    background-color: var(--bg-body);
 }
 
-/* ---- Messages (succes / erreur) ---- */
+
 .msg-success {
     background-color: #d4edda;
     color: #155724;
@@ -328,25 +347,25 @@ a:hover {
     font-size: 13px;
 }
 
-/* ---- Layout Dashboard (sidebar + contenu) ---- */
+
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* Sidebar */
+
 .sidebar {
-    width: 220px;
-    background-color: #2c3e80;
+    width: 200px;
+    background-color: var(--primary-color);
     color: white;
-    padding-top: 20px;
+    padding-top: 15px;
     flex-shrink: 0;
 }
 
 .sidebar .sidebar-header {
     text-align: center;
-    padding: 0 15px 20px;
-    border-bottom: 1px solid #3a4f99;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--sidebar-bg);
 }
 
 .sidebar .sidebar-header h3 {
@@ -356,13 +375,14 @@ a:hover {
 
 .sidebar .sidebar-header small {
     font-size: 11px;
-    color: #b0b8d1;
+    color: var(--accent-gray);
 }
 
 .sidebar .user-info {
-    padding: 15px;
-    border-bottom: 1px solid #3a4f99;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--sidebar-bg);
     font-size: 13px;
+    text-align: center;
 }
 
 .sidebar .user-info .name {
@@ -371,7 +391,7 @@ a:hover {
 }
 
 .sidebar .user-info .role { 
-    color: #b0b8d1;
+    color: var(--accent-gray);
     font-size: 11px;
 }
 
@@ -381,14 +401,14 @@ a:hover {
 
 .sidebar nav a {
     display: block;
-    color: #b0b8d1;
-    padding: 10px 20px;
+    color: var(--accent-gray);
+    padding: 8px 20px;
     font-size: 13px;
 }
 
 .sidebar nav a:hover,
 .sidebar nav a.active {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     color: white;
     text-decoration: none;
 }
@@ -405,16 +425,17 @@ a:hover {
 }
 
 .sidebar .logout-link {
-    border-top: 1px solid #3a4f99;
-    margin-top: 20px;
+    border-top: 1px solid var(--sidebar-bg);
+    margin-top: 10px;
     padding-top: 10px;
+    text-align: center;
 }
 
 .sidebar .logout-link a {
     color: #e88;
 }
 
-/* Contenu principal */
+
 .main-content {
     flex: 1;
     padding: 20px 30px;
@@ -440,7 +461,7 @@ a:hover {
     margin-top: 4px;
 }
 
-/* ---- Cartes statistiques ---- */
+
 .stats-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -467,7 +488,7 @@ a:hover {
     left: 0;
     width: 4px;
     height: 100%;
-    background: #2c3e80;
+    background: var(--primary-color);
 }
 
 .stat-card:hover {
@@ -478,7 +499,7 @@ a:hover {
 .stat-card .number {
     font-size: 32px;
     font-weight: 700;
-    color: #2c3e80;
+    color: var(--primary-color);
     line-height: 1;
 }
 
@@ -491,7 +512,7 @@ a:hover {
     letter-spacing: 0.025em;
 }
 
-/* ---- Tableaux de donnees ---- */
+
 .table-container {
     background: white;
     border: 1px solid #e2e8f0;
@@ -545,7 +566,7 @@ table td {
     background: #fff;
 }
 
-/* Specific PDF-style for printed/exported view */
+
 .pdf-style-table {
     border: 1px solid #000 !important;
 }
@@ -560,13 +581,13 @@ table td {
     border: 1px solid #eee !important;
 }
 
-/* Export Button */
+
 .btn-export {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -578,7 +599,7 @@ table td {
 }
 
 .btn-export:hover {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -594,7 +615,7 @@ table td {
     font-style: italic;
 }
 
-/* ---- Badges ---- */
+
 .badge {
     display: inline-block;
     padding: 4px 10px;
@@ -606,23 +627,23 @@ table td {
 }
 
 .badge-admis {
-    background-color: #dcfce7;
-    color: #166534;
+    background-color: #d1fae5;
+    color: var(--valid-green);
 }
 
 .badge-ajourne {
     background-color: #fee2e2;
-    color: #991b1b;
+    color: var(--invalid-red);
 }
 
 .badge-code {
-    background-color: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
+    background-color: var(--bg-body);
+    color: var(--text-muted);
+    border: 1px solid var(--accent-gray);
     font-family: monospace;
 }
 
-/* Avatar for lists */
+
 .avatar-circle {
     width: 32px;
     height: 32px;
@@ -645,7 +666,7 @@ table td {
     font-size: 14px;
 }
 
-/* ---- Boutons d'action ---- */
+
 .btn-action {
     display: inline-block;
     padding: 4px 10px;
@@ -671,7 +692,7 @@ table td {
 .btn-add {
     display: inline-block;
     padding: 7px 15px;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -680,11 +701,242 @@ table td {
 }
 
 .btn-add:hover {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     text-decoration: none;
 }
 
-/* ---- Barre de recherche ---- */
+
+.actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-import {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-import:hover {
+    background-color: #1e7e34;
+    text-decoration: none;
+}
+
+.btn-export-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    background-color: #fd7e14;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-export-action:hover {
+    background-color: #e06000;
+}
+
+.export-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    min-width: 200px;
+    z-index: 999;
+    overflow: hidden;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+}
+
+.dropdown-menu a:last-child { border-bottom: none; }
+.dropdown-menu a:hover { background: #f0f4ff; color: var(--primary-color); text-decoration: none; }
+
+
+.section-badge {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 26px;
+    text-align: center;
+    color: white;
+}
+.sec-a { background: var(--primary-color); }
+.sec-b { background: #e74c3c; }
+.sec-c { background: #27ae60; }
+.sec-d { background: #f39c12; }
+.sec-e { background: #8e44ad; }
+
+
+.import-report {
+    background: #fff8e1;
+    border: 1px solid #ffd54f;
+    border-left: 4px solid #f0ad4e;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.import-report ul {
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+.import-report ul li {
+    margin-bottom: 3px;
+    color: #555;
+}
+
+
+.csv-info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+}
+
+.csv-info-box p { margin-bottom: 8px; }
+
+.csv-header-preview {
+    display: block;
+    background: #1e293b;
+    color: #7dd3fc;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 11px;
+    margin: 6px 0;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.csv-rules {
+    padding-left: 18px;
+    margin: 8px 0;
+}
+
+.csv-rules li {
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.csv-template-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.csv-template-link:hover { text-decoration: underline; }
+
+.format-tabs { margin: 8px 0; }
+
+.format-tab {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.format-label {
+    display: block;
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+
+.file-drop-zone {
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8fafc;
+}
+
+.file-drop-zone:hover,
+.file-drop-zone.drag-over {
+    background: #e8eeff;
+    border-color: var(--primary-dark);
+}
+
+.file-drop-zone p { margin: 8px 0 4px; font-size: 13px; color: #555; }
+
+
+.import-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.step-text {
+    flex: 1;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+    padding-top: 3px;
+}
+
+.step-text strong { color: #1e293b; }
+
+
 .search-bar {
     display: flex;
     gap: 8px;
@@ -707,7 +959,7 @@ table td {
 
 .search-bar button {
     padding: 7px 15px;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -721,7 +973,7 @@ table td {
     margin-left: 10px;
 }
 
-/* ---- Modal (popup) ---- */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -754,7 +1006,7 @@ table td {
 
 .modal-header h3 {
     font-size: 16px;
-    color: #2c3e80;
+    color: var(--primary-color);
 }
 
 .modal-close {
@@ -791,7 +1043,7 @@ table td {
     gap: 15px;
 }
 
-/* ---- Profil etudiant ---- */
+
 .profile-card {
     background: white;
     border: 1px solid #ddd;
@@ -817,14 +1069,14 @@ table td {
     margin-left: auto;
     text-align: center;
     padding: 15px 25px;
-    border: 2px solid #2c3e80;
+    border: 2px solid var(--primary-color);
     border-radius: 6px;
 }
 
 .profile-card .moyenne-box .value {
     font-size: 28px;
     font-weight: bold;
-    color: #2c3e80;
+    color: var(--primary-color);
 }
 
 .profile-card .moyenne-box .label {
@@ -832,7 +1084,7 @@ table td {
     color: #888;
 }
 
-/* Moyenne bar */
+
 .moyenne-bar {
     background: white;
     border: 1px solid #ddd;
@@ -852,7 +1104,7 @@ table td {
 .moyenne-bar .bar-fill {
     height: 100%;
     border-radius: 5px;
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
 }
 
 .moyenne-bar .bar-fill.pass {
@@ -863,7 +1115,7 @@ table td {
     background-color: #dc3545;
 }
 
-/* ---- Modules en cartes ---- */
+
 .modules-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -879,7 +1131,7 @@ table td {
 }
 
 .module-card h4 {
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 8px;
 }
 
@@ -895,7 +1147,7 @@ table td {
     gap: 6px;
 }
 
-/* ---- Notes saisie ---- */
+
 .notes-layout {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -912,11 +1164,11 @@ table td {
 
 .note-form-box h3 {
     font-size: 15px;
-    color: #2c3e80;
+    color: var(--primary-color);
     margin-bottom: 15px;
 }
 
-/* ---- Responsive ---- */
+
 @media (max-width: 768px) {
     .features-grid,
     .roles-grid {
@@ -956,9 +1208,7 @@ table td {
     }
 }
 
-/* ============================================
-   Premium Auth Styles (Glassmorphism)
-   ============================================ */
+
 
 .auth-body {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -1005,7 +1255,7 @@ table td {
 }
 
 .auth-logo h1 {
-    color: #2c3e80;
+    color: var(--primary-color);
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 5px;
@@ -1017,49 +1267,17 @@ table td {
     font-weight: 300;
 }
 
-.auth-toggle {
-    display: flex;
-    background: #f0f2f5;
-    border-radius: 10px;
-    padding: 5px;
+.auth-header-simple {
+    text-align: center;
     margin-bottom: 25px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.toggle-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    color: #666;
-    font-size: 15px;
+.auth-header-simple h2 {
+    color: var(--primary-color);
+    font-size: 18px;
     font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.toggle-btn.active {
-    background: white;
-    color: #2c3e80;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.auth-form {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
-
-.auth-form.active-form {
-    display: block;
-}
-
-.input-row {
-    display: flex;
-    gap: 15px;
-}
-
-.input-row .input-group {
-    flex: 1;
 }
 
 .auth-container .input-group {
@@ -1087,7 +1305,7 @@ table td {
 
 .auth-container input:focus {
     outline: none;
-    border-color: #2c3e80;
+    border-color: var(--primary-color);
     background: white;
     box-shadow: 0 0 0 3px rgba(44, 62, 128, 0.1);
 }
@@ -1095,7 +1313,7 @@ table td {
 .auth-submit-btn {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #2c3e80 0%, #1a2755 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -1125,9 +1343,9 @@ table td {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* PDF Export Button */
+
 .btn-export {
-    background-color: #2c3e80;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     padding: 10px 18px;
@@ -1143,7 +1361,7 @@ table td {
 }
 
 .btn-export:hover {
-    background-color: #1a2755;
+    background-color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(44, 62, 128, 0.3);
 }
@@ -1152,9 +1370,9 @@ table td {
     font-size: 16px;
 }
 
-/* Role Selector Styling */
+
 .role-selector input:checked + .role-btn {
-    background: #2c3e80;
+    background: var(--primary-color);
     color: white !important;
     box-shadow: 0 4px 10px rgba(44, 62, 128, 0.2);
 }
@@ -1162,3 +1380,4 @@ table td {
 .role-btn:hover {
     background: #e2e8f0;
 }
+

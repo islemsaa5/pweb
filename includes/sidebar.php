@@ -1,13 +1,20 @@
-<?php
-// includes/sidebar.php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 $role = $_SESSION['role'];
 $page_courante = basename($_SERVER['PHP_SELF']);
 ?>
 <div class="sidebar">
-    <div class="sidebar-header">
-        <img src="assets/img/logo.png" alt="USTHB Logo" style="width: 70px; height: auto; margin-bottom: 15px; border-radius: 8px; background: white; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-        <h3 style="letter-spacing: 1px;">USTHB</h3>
-        <small style="color: #b0b8d1;">Scolarité Informatique</small>
+    <div class="sidebar-header" style="padding: 10px 10px;">
+        <img src="assets/img/logo.png" alt="USTHB Logo" style="width: 45px; height: auto; margin-bottom: 5px; border-radius: 5px; background: white; padding: 3px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        <h3 style="letter-spacing: 0.5px; font-size: 14px; margin: 0;">USTHB</h3>
+        <small style="color: #b0b8d1; font-size: 10px; display: block; margin-top: 2px;">Scolarité Informatique</small>
     </div>
 
     <div class="user-info">

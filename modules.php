@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -39,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Récupérer et classer par semestre avec infos prof
 $modules_s1 = $pdo->query("SELECT m.*, e.nom, e.prenom, e.specialite FROM modules m LEFT JOIN enseignants e ON m.enseignant_id = e.id WHERE m.semestre = 1 ORDER BY m.intitule")->fetchAll();
 $modules_s2 = $pdo->query("SELECT m.*, e.nom, e.prenom, e.specialite FROM modules m LEFT JOIN enseignants e ON m.enseignant_id = e.id WHERE m.semestre = 2 ORDER BY m.intitule")->fetchAll();
 $enseignants = $pdo->query("SELECT id, nom, prenom FROM enseignants ORDER BY nom")->fetchAll();

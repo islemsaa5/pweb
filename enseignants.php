@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -14,7 +22,6 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // AJOUTER UN ENSEIGNANT
     if ($action === 'add') {
         $matricule = clean($_POST['matricule']);
         $nom = clean($_POST['nom']);
@@ -35,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // AFFECTER UN MODULE
+
     elseif ($action === 'assign') {
         $enseignant_id = (int)$_POST['enseignant_id'];
         $module_id = (int)$_POST['module_id'];
@@ -47,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Erreur lors de l'affectation.";
         }
     }
-    // SUPPRIMER UN ENSEIGNANT
+
     elseif ($action === 'delete') {
         $id = (int) $_POST['id'];
         $pdo->prepare("DELETE FROM enseignants WHERE id = ?")->execute([$id]);
@@ -55,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Récupérer les enseignants avec leurs modules affectés
 $enseignants = $pdo->query("
     SELECT e.*, 
     (SELECT GROUP_CONCAT(CONCAT(intitule, ' (', section, ')') SEPARATOR ', ') FROM modules WHERE enseignant_id = e.id) as mes_modules
@@ -63,7 +69,6 @@ $enseignants = $pdo->query("
     ORDER BY e.nom
 ")->fetchAll();
 
-// Récupérer les modules non affectés (ou tous pour ré-affectation)
 $all_modules = $pdo->query("SELECT id, intitule, code_module, section FROM modules ORDER BY section, intitule")->fetchAll();
 
 include 'includes/header.php';

@@ -1,4 +1,12 @@
-<?php
+﻿<?php
+/**
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
+ * - SAADI Islem (232331698506)
+ * - KHELLAS Maria (242431486807)
+ * - ABDELLATIF Sara (242431676416)
+ * - DAHMANI Anais (242431679715)
+ */
 require_once 'config.php';
 requireLogin();
 
@@ -23,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($note < 0 || $note > 20) {
         $error = 'La note doit etre entre 0 et 20.';
     } else {
-        // Enregistrer ou mettre a jour la note
+
         $stmt = $pdo->prepare("
             INSERT INTO notes (etudiant_id, module_id, note) 
             VALUES (?, ?, ?) 
@@ -34,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Recuperer les dernieres notes saisies
 $dernieres_notes = $pdo->query("
     SELECT n.id, n.note, e.nom, e.prenom, e.matricule, m.code_module 
     FROM notes n
@@ -111,9 +118,9 @@ include 'includes/sidebar.php';
                         <td><span class="badge badge-code"><?= htmlspecialchars($n['code_module']) ?></span></td>
                         <td>
                             <?php if ($n['note'] >= 10): ?>
-                                <strong style="color: green;"><?= $n['note'] ?></strong>
+                                <strong style="color: var(--valid-green);"><?= $n['note'] ?></strong>
                             <?php else: ?>
-                                <strong style="color: red;"><?= $n['note'] ?></strong>
+                                <strong style="color: var(--invalid-red);"><?= $n['note'] ?></strong>
                             <?php endif; ?>
                         </td>
                     </tr>
