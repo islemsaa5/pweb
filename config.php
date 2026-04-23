@@ -7,7 +7,7 @@
  * - ABDELLATIF Sara (242431676416)
  * - DAHMANI Anais (242431679715)
  */
-$host = '127.0.0.1;port=3307';
+$host = '127.0.0.1';port='3307';
 $dbname = 'gestion_scolarite';
 $user = 'root';
 $pass = '';
