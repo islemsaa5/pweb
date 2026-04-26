@@ -37,7 +37,8 @@ CREATE TABLE `enseignants` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `enseignants` VALUES (1,'ENS001','LAACHEMI','Ahmed','laachemi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Programmation Web'),(2,'ENS002','BOUZIDI','Sara','bouzidi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Algorithmes'),(3,'ENS003','HAMDI','Karim','hamdi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Base de Donnees');
-CREATE TABLE `modules` (
+
+CREATE TABLE `modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code_module` varchar(20) NOT NULL,
   `intitule` varchar(200) NOT NULL,
