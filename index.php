@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="footer-info">
             &copy; 2026 USTHB - Faculté d'Informatique<br>
-            <small>Système de gestion académique v2.0</small>
+            <small>Système de gestion académique</small>
         </div>
     </div>
 
