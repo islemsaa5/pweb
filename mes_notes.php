@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -19,18 +19,23 @@ $page_title = 'Mes Notes';
 $user_id = $_SESSION['user_id'];
 
 $stmt = $pdo->prepare("
-    SELECT m.code_module, m.intitule, m.coefficient, n.note,
+    SELECT m.code_module, m.intitule, m.coefficient, m.semestre, n.note,
            e.nom as ens_nom, e.prenom as ens_prenom
     FROM modules m
     LEFT JOIN notes n ON m.id = n.module_id AND n.etudiant_id = ?
     LEFT JOIN enseignants e ON m.enseignant_id = e.id
-    ORDER BY m.intitule
+    ORDER BY m.semestre, m.intitule
 ");
 $stmt->execute([$user_id]);
-$notes = $stmt->fetchAll();
+$all_notes = $stmt->fetchAll();
 
-$total_c = 0;
-$total_n = 0;
+$semestres = [1 => [], 2 => []];
+foreach ($all_notes as $n) {
+    $semestres[$n['semestre']][] = $n;
+}
+
+$global_c = 0;
+$global_n = 0;
 
 include 'includes/header.php';
 include 'includes/sidebar.php';
@@ -39,67 +44,93 @@ include 'includes/sidebar.php';
 <div class="main-content">
     <div class="page-header">
         <h1>Mes Notes</h1>
-        <p>Apercu de vos resultats par module</p>
+        <p>Aperçu de vos résultats par semestre</p>
     </div>
 
-    <div class="table-container">
+    <?php foreach ([1, 2] as $s): ?>
+    <h3 style="margin: 25px 0 15px; color: var(--primary-color); border-left: 4px solid var(--primary-color); padding-left: 10px;">
+        Semestre <?= $s ?>
+    </h3>
+    
+    <div class="table-container" style="margin-bottom: 30px;">
         <table>
             <thead>
                 <tr>
                     <th>Module</th>
                     <th>Code</th>
                     <th>Enseignant</th>
-                    <th>Coefficient</th>
-                    <th>Note</th>
+                    <th style="text-align: center;">Coeff</th>
+                    <th style="text-align: center;">Note</th>
                     <th>Statut</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($notes as $n): ?>
+                <?php 
+                $sem_c = 0;
+                $sem_n = 0;
+                if (!empty($semestres[$s])):
+                    foreach ($semestres[$s] as $n): 
+                        if ($n['note'] !== null) {
+                            $sem_c += $n['coefficient'];
+                            $sem_n += $n['note'] * $n['coefficient'];
+                            $global_c += $n['coefficient'];
+                            $global_n += $n['note'] * $n['coefficient'];
+                        }
+                ?>
                 <tr>
-                    <td><?= htmlspecialchars($n['intitule']) ?></td>
+                    <td><strong><?= htmlspecialchars($n['intitule']) ?></strong></td>
                     <td><span class="badge badge-code"><?= htmlspecialchars($n['code_module']) ?></span></td>
-                    <td>
-                        <?= $n['ens_nom'] ? htmlspecialchars($n['ens_prenom'].' '.$n['ens_nom']) : '...' ?>
-                    </td>
+                    <td><?= $n['ens_nom'] ? htmlspecialchars($n['ens_prenom'].' '.$n['ens_nom']) : '<span style="color:#999;">...</span>' ?></td>
                     <td style="text-align: center;"><?= $n['coefficient'] ?></td>
-                    
-                    <?php if ($n['note'] !== null): ?>
-                        <?php 
-                        $total_c += $n['coefficient'];
-                        $total_n += $n['note'] * $n['coefficient'];
-                        ?>
-                        <td><strong><?= number_format($n['note'], 2) ?></strong></td>
-                        <td>
+                    <td style="text-align: center;">
+                        <?= ($n['note'] !== null) ? '<strong>'.number_format($n['note'], 2).'</strong>' : '<span style="color:#999;">-</span>' ?>
+                    </td>
+                    <td>
+                        <?php if ($n['note'] !== null): ?>
                             <span class="badge <?= $n['note'] >= 10 ? 'badge-admis' : 'badge-ajourne' ?>">
-                                <?= $n['note'] >= 10 ? 'Valide' : 'Non valide' ?>
+                                <?= $n['note'] >= 10 ? 'Valide' : 'Ajourné' ?>
                             </span>
-                        </td>
-                    <?php else: ?>
-                        <td style="color: #999;">Pas encore note</td>
-                        <td>-</td>
-                    <?php endif; ?>
+                        <?php else: ?>
+                            <span style="color:#999; font-style:italic;">En attente</span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
-                <?php endforeach; ?>
+                <?php endforeach; else: ?>
+                <tr><td colspan="6" class="empty-row">Aucun module pour ce semestre</td></tr>
+                <?php endif; ?>
             </tbody>
-            
-            <?php if ($total_c > 0): ?>
-            <tfoot style="background-color: #f0f2f5;">
+            <?php if ($sem_c > 0): ?>
+            <tfoot style="background-color: #f8fafc;">
                 <tr>
-                    <td colspan="3" style="text-align: right; font-weight: bold;">Moyenne Generale :</td>
-                    <td style="text-align: center; font-weight: bold;"><?= $total_c ?> (Total Coeff)</td>
-                    <td colspan="2" style="font-size: 16px; font-weight: bold;">
-                        <?php 
-                        $moyenne = $total_n / $total_c;
-                        $color = $moyenne >= 10 ? 'color: green;' : 'color: red;';
-                        ?>
-                        <span style="<?= $color ?>"><?= number_format($moyenne, 2) ?> / 20</span>
+                    <td colspan="3" style="text-align: right; font-weight: bold;">Moyenne Semestrielle :</td>
+                    <td style="text-align: center; font-weight: bold;"><?= $sem_c ?></td>
+                    <td colspan="2" style="font-weight: bold;">
+                        <?php $moy_s = $sem_n / $sem_c; ?>
+                        <span style="color: <?= $moy_s >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>; font-size: 15px;">
+                            <?= number_format($moy_s, 2) ?> / 20
+                        </span>
                     </td>
                 </tr>
             </tfoot>
             <?php endif; ?>
         </table>
     </div>
+    <?php endforeach; ?>
+
+    <!-- Résumé Annuel -->
+    <?php if ($global_c > 0): ?>
+    <div class="glass-effect" style="padding: 20px; border-radius: 12px; background: white; margin-top: 20px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h4 style="color: #64748b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Moyenne Générale Annuelle</h4>
+            <div style="font-size: 11px; color: #94a3b8;">Calculée sur <?= $global_c ?> coefficients</div>
+        </div>
+        <?php $moy_a = $global_n / $global_c; ?>
+        <div style="font-size: 28px; font-weight: 800; color: <?= $moy_a >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>;">
+            <?= number_format($moy_a, 2) ?> <span style="font-size: 16px; font-weight: 500; color: #94a3b8;">/ 20</span>
+        </div>
+    </div>
+    <?php endif; ?>
+
 </div>
 
 <?php include 'includes/footer.php'; ?>
