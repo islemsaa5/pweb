@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -117,15 +117,15 @@ include 'includes/sidebar.php';
                 <i class="fa-solid fa-file-pdf"></i> Exporter PDF <i class="fa-solid fa-caret-down"></i>
             </button>
             <div class="dropdown-menu" id="exportDropdown" style="display:none;">
-                <a href="liste_section_pdf.php?section=all" target="_blank"><i class="fa-solid fa-users"></i> PDF Ã¢â‚¬â€ Toutes les sections</a>
-                <a href="liste_section_pdf.php?section=A" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF Ã¢â‚¬â€ Section A</a>
-                <a href="liste_section_pdf.php?section=B" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF Ã¢â‚¬â€ Section B</a>
-                <a href="liste_section_pdf.php?section=C" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF Ã¢â‚¬â€ Section C</a>
+                <a href="liste_section_pdf.php?section=all" target="_blank"><i class="fa-solid fa-users"></i> PDF — Toutes les sections</a>
+                <a href="liste_section_pdf.php?section=A" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF — Section A</a>
+                <a href="liste_section_pdf.php?section=B" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF — Section B</a>
+                <a href="liste_section_pdf.php?section=C" target="_blank"><i class="fa-solid fa-graduation-cap"></i> PDF — Section C</a>
                 <hr style="margin:4px 0; border-color:#e2e8f0;">
-                <a href="etudiants.php?action=export&section=all"><i class="fa-solid fa-file-csv"></i> CSV Ã¢â‚¬â€ Toutes sections</a>
-                <a href="etudiants.php?action=export&section=A"><i class="fa-solid fa-file-csv"></i> CSV Ã¢â‚¬â€ Section A</a>
-                <a href="etudiants.php?action=export&section=B"><i class="fa-solid fa-file-csv"></i> CSV Ã¢â‚¬â€ Section B</a>
-                <a href="etudiants.php?action=export&section=C"><i class="fa-solid fa-file-csv"></i> CSV Ã¢â‚¬â€ Section C</a>
+                <a href="etudiants.php?action=export&section=all"><i class="fa-solid fa-file-csv"></i> CSV — Toutes sections</a>
+                <a href="etudiants.php?action=export&section=A"><i class="fa-solid fa-file-csv"></i> CSV — Section A</a>
+                <a href="etudiants.php?action=export&section=B"><i class="fa-solid fa-file-csv"></i> CSV — Section B</a>
+                <a href="etudiants.php?action=export&section=C"><i class="fa-solid fa-file-csv"></i> CSV — Section C</a>
             </div>
         </div>
         <div class="badge" style="background:#2c3e80;color:white;margin-left:auto;">
@@ -286,28 +286,28 @@ include 'includes/sidebar.php';
 
                 <!-- Alerte PDF -->
                 <div style="background:#fff3cd; border:1px solid #ffc107; border-left:4px solid #fd7e14; border-radius:6px; padding:12px 14px; margin-bottom:15px; font-size:13px;">
-                    <strong>Ã¢Å¡Â Ã¯Â¸Â Impossible d'importer un PDF !</strong><br>
-                    Les fichiers PDF ne peuvent pas àªtre lus par le système. La liste USTHB est un fichier <strong>Excel (.xlsx)</strong>.
+                    <strong>⚠️ Impossible d'importer un PDF !</strong><br>
+                    Les fichiers PDF ne peuvent pas être lus par le système. La liste USTHB est un fichier <strong>Excel (.xlsx)</strong>.
                     Suivez les étapes ci-dessous pour le convertir en CSV importable.
                 </div>
 
                 <!-- Guide étape par étape -->
                 <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:15px;">
                     <p style="font-weight:700; color:#2c3e80; margin-bottom:12px; font-size:13px;">
-                        Ã°Å¸â€œâ€¹ Comment importer la liste officielle USTHB ?
+                        📋 Comment importer la liste officielle USTHB ?
                     </p>
 
                     <div class="import-step">
                         <div class="step-num">1</div>
                         <div class="step-text">
-                            <strong>Ouvrez le fichier Excel</strong> reà§u de l'université (liste des étudiants .xlsx)
+                            <strong>Ouvrez le fichier Excel</strong> reçu de l'université (liste des étudiants .xlsx)
                         </div>
                     </div>
 
                     <div class="import-step">
                         <div class="step-num">2</div>
                         <div class="step-text">
-                            <strong>Fichier Ã¢â€ â€™ Enregistrer sous</strong> Ã¢â€ â€™ Choisissez le format :
+                            <strong>Fichier → Enregistrer sous</strong> → Choisissez le format :
                             <code style="background:#1e293b;color:#7dd3fc;padding:2px 6px;border-radius:3px;font-size:11px;margin-left:4px;">CSV UTF-8 (délimité par des virgules)</code>
                             <br><small style="color:#888;">ou "CSV (séparateur : point-virgule)"</small>
                         </div>
@@ -339,7 +339,7 @@ include 'includes/sidebar.php';
                     <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('csvInput').click()">
                         <i class="fa-solid fa-cloud-arrow-up" style="font-size:32px;color:#2c3e80;margin-bottom:8px;display:block;"></i>
                         <p><strong>Cliquez ici</strong> ou glissez-déposez votre fichier CSV</p>
-                        <small style="color:#aaa;">.csv uniquement Ã¢â‚¬â€ converti depuis Excel USTHB</small>
+                        <small style="color:#aaa;">.csv uniquement — converti depuis Excel USTHB</small>
                         <br>
                         <span id="fileName" style="font-size:13px;color:#2c3e80;font-weight:600;margin-top:5px;display:block;"></span>
                     </div>
@@ -378,7 +378,7 @@ document.addEventListener('click', function(e) {
 });
 function showFileName(input) {
     const name = input.files[0]?.name || '';
-    document.getElementById('fileName').textContent = name ? 'Ã°Å¸â€œâ€ž ' + name : '';
+    document.getElementById('fileName').textContent = name ? '📄 ' + name : '';
 }
 
 const dropZone = document.getElementById('dropZone');
@@ -391,7 +391,7 @@ if (dropZone) {
         const file = e.dataTransfer.files[0];
         if (file) {
             document.getElementById('csvInput').files = e.dataTransfer.files;
-            document.getElementById('fileName').textContent = 'Ã°Å¸â€œâ€ž ' + file.name;
+            document.getElementById('fileName').textContent = '📄 ' + file.name;
         }
     });
 }

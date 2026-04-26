@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
  * - SAADI Islem (232331698506)
@@ -358,13 +358,13 @@ a:hover {
     width: 200px;
     background-color: var(--primary-color);
     color: white;
-    padding-top: 15px;
+    padding-top: 0;
     flex-shrink: 0;
 }
 
 .sidebar .sidebar-header {
     text-align: center;
-    padding: 10px 15px;
+    padding: 15px 15px;
     border-bottom: 1px solid var(--sidebar-bg);
 }
 
@@ -438,7 +438,7 @@ a:hover {
 
 .main-content {
     flex: 1;
-    padding: 20px 30px;
+    padding: 15px 30px 20px;
     background-color: #f5f5f5;
 }
 

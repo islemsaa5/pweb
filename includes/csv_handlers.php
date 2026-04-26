@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -41,7 +41,7 @@ function exportEtudiantsCSV($pdo, $section_filter = 'all') {
     fputcsv($out, ['Exporté le : ' . date('d/m/Y H:i')], ';');
     fputcsv($out, [], ';');
 
-    fputcsv($out, ['NÂ°','Palier','Spécialité','Section','Matricule','Nom','Prénom','État','Groupe TD','Groupe TP'], ';');
+    fputcsv($out, ['N°','Palier','Spécialité','Section','Matricule','Nom','Prénom','État','Groupe TD','Groupe TP'], ';');
 
     $n = 1;
     foreach ($rows as $row) {
@@ -79,7 +79,7 @@ function importEtudiantsCSV($pdo, $file) {
     $header = fgetcsv($handle, 2000, $sep);
     if (!$header) return ['error' => 'Fichier vide.'];
 
-    $header_clean = array_map(fn($h) => trim(strtolower(str_replace(['é','è','ê','Ã«','î','Ã¯','ô','Ã¹','û','Ã¼','Ã§','à',' '],['e','e','e','e','i','i','o','u','u','u','c','a','_'], $h))), $header);
+    $header_clean = array_map(fn($h) => trim(strtolower(str_replace(['é','è','ê','ë','î','ï','ô','ù','û','ü','ç','à',' '],['e','e','e','e','i','i','o','u','u','u','c','a','_'], $h))), $header);
     $col = [];
     foreach ($header_clean as $i => $h) $col[$h] = $i;
 

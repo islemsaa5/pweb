@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -60,7 +60,7 @@ foreach ($all_notes as $n) {
         
         
         .official-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 30px; }
-        .official-header img { width: 80px; }
+        .official-header img { width: 90px; height: auto; object-fit: contain; }
         .official-header .text { flex: 1; padding: 0 20px; font-size: 13px; line-height: 1.4; color: var(--primary-color); font-weight: 500; }
         
         .releve-title { text-align: center; margin-bottom: 30px; }
@@ -111,8 +111,8 @@ foreach ($all_notes as $n) {
         .statut-admis { background: var(--valid-green); color: white; }
         .statut-ajourne { background: var(--invalid-red); color: white; }
 
-        .btn-print { position: fixed; right: 40px; top: 40px; background: var(--primary-color); color: white; padding: 12px 25px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; z-index: 100; }
-        .btn-print:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+<button class="btn-print no-print" onclick="window.print()">??? Télécharger en PDF</button>
+<button class="btn-print no-print" onclick="window.print()">??? Télécharger en PDF</button>
 
         @media print {
             body { background: white; padding: 0; }
@@ -123,7 +123,7 @@ foreach ($all_notes as $n) {
 </head>
 <body>
 
-<button class="btn-print no-print" onclick="window.print()">ðŸ–¨ï¸ Télécharger en PDF</button>
+<button class="btn-print no-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Télécharger en PDF</button>
 
 <div class="releve-paper">
     <div class="official-header">
@@ -132,11 +132,11 @@ foreach ($all_notes as $n) {
             <p>Ministère de l'Enseignement Supérieur et de la Recherche Scientifique</p>
             <p><strong>USTHB - Faculté d'Informatique</strong></p>
         </div>
-        <img src="https://upload.wikimedia.org/wikipedia/fr/5/52/USTHB_Logo.png" alt="Logo USTHB">
+        <img src="assets/img/logo.png" alt="Logo USTHB">
         <div class="text" style="text-align: right;">
-            <p>Ø§Ù„Ø¬Ù…Ù‡ÙˆØ±ÙŠØ© Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±ÙŠØ© Ø§Ù„Ø¯ÙŠÙ…Ù‚Ø±Ø§Ø·ÙŠØ© Ø§Ù„Ø´Ø¹Ø¨ÙŠØ©</p>
-            <p>ÙˆØ²Ø§Ø±Ø© Ø§Ù„ØªØ¹Ù„ÙŠÙ… Ø§Ù„Ø¹Ø§Ù„ÙŠ ÙˆØ§Ù„Ø¨Ø­Ø« Ø§Ù„Ø¹Ù„Ù…ÙŠ</p>
-            <p><strong>Ø¬Ø§Ù…Ø¹Ø© Ù‡ÙˆØ§Ø±ÙŠ Ø¨ÙˆÙ…Ø¯ÙŠÙ† Ù„Ù„Ø¹Ù„ÙˆÙ… Ùˆ Ø§Ù„ØªÙƒÙ†ÙˆÙ„ÙˆØ¬ÙŠØ§</strong></p>
+            <p>الجمهورية الجزائرية الديمقراطية الشعبية</p>
+            <p>وزارة التعليم العالي والبحث العلمي</p>
+            <p><strong>جامعة هواري بومدين للعلوم و التكنولوجيا</strong></p>
         </div>
     </div>
 

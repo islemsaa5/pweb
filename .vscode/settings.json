@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "*.php": "php"
+  },
+  "[php]": {
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false
+  },
+  "php.validate.executablePath": null,
+  "php.validate.run": "onSave",
+  "editor.rulers": [80, 120],
+  "files.encoding": "utf8"
+}

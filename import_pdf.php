@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['json_data'])) {
     $rows = json_decode($_POST['json_data'], true);
 
     if (!is_array($rows) || empty($rows)) {
-        $result['errors'][] = 'Aucune donnée reÃ§ue ou format JSON invalide.';
+        $result['errors'][] = 'Aucune donnée reçue ou format JSON invalide.';
     } else {
         $default_pw = password_hash('password', PASSWORD_BCRYPT);
         $stmt = $pdo->prepare("
@@ -243,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['json_data'])) {
             <table class="w-full" id="previewTable" style="width:100%; border-collapse:collapse;">
                 <thead>
                     <tr>
-                        <th>NÂ°</th>
+                        <th>N°</th>
                         <th>Matricule</th>
                         <th>Nom</th>
                         <th>Prénom</th>

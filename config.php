@@ -23,6 +23,7 @@ try {
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+header('Content-Type: text/html; charset=utf-8');
 
 function clean($data) {
     return htmlspecialchars(strip_tags(trim($data)));
@@ -46,4 +47,3 @@ function requireRole($role) {
         exit;
     }
 }
-?>

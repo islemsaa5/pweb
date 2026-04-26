@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -60,7 +60,6 @@ if ($moy_s1 !== null && $moy_s2 !== null) {
 include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
-
 <div class="main-content">
     <div class="page-header">
         <h1>Mon Espace Étudiant</h1>
@@ -169,7 +168,6 @@ include 'includes/sidebar.php';
     <!-- Actions -->
     <div style="margin-top: 25px; display: flex; gap: 15px;">
         <a href="releve_notes.php" class="btn-add" style="flex: 1; text-align: center; background: #2c3e80;"><i class="fa-solid fa-file-invoice"></i> Télécharger le Relevé Annuel</a>
-        <a href="mes_modules.php" class="btn-add" style="flex: 1; text-align: center; background: #5bc0de;"><i class="fa-solid fa-book"></i> Voir le Programme de l'Année</a>
     </div>
 
 </div>

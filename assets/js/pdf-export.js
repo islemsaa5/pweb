@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
  * - SAADI Islem (232331698506)
@@ -7,8 +7,8 @@
  * - DAHMANI Anais (242431679715)
  */
 /**
- * Projet: Gestion de ScolaritÃ© USTHB
- * Ã‰quipe:
+ * Projet: Gestion de Scolarité USTHB
+ * Équipe:
  * - SAADI Islem (232331698506)
  * - KHELLAS Maria (242431486807)
  * - ABDELLATIF Sara (242431676416)
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const exportBtn = document.createElement('button');
         exportBtn.className = 'btn-export';
-        exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> TÃ©lÃ©charger PDF';
+        exportBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Telecharger PDF';
         exportBtn.style.marginLeft = 'auto';
 
         const textWrapper = document.createElement('div');
@@ -60,7 +60,7 @@ function exportToPDF() {
 
     doc.setFontSize(18);
     doc.setTextColor(44, 62, 128);
-    doc.text('USTHB - ScolaritÃ©', 40, 40);
+    doc.text('USTHB - Scolarité', 40, 40);
     
     doc.setFontSize(14);
     doc.setTextColor(33, 33, 33);
@@ -73,7 +73,7 @@ function exportToPDF() {
     }
     
     doc.setFontSize(9);
-    doc.text(`GÃ©nÃ©rÃ© le: ${date}`, 480, 40);
+    doc.text(`Généré le: ${date}`, 480, 40);
     
     let currentY = 110;
 
@@ -100,7 +100,7 @@ function exportToPDF() {
 
         const headers = Array.from(table.querySelectorAll('thead th'));
         const columnsToSkip = headers
-            .map((th, i) => (['actions', 'Ã©tat', 'etat', 'delete', 'modifier'].includes(th.innerText.toLowerCase().trim()) ? i : -1))
+            .map((th, i) => (['actions', 'état', 'etat', 'delete', 'modifier'].includes(th.innerText.toLowerCase().trim()) ? i : -1))
             .filter(i => i !== -1);
 
         doc.autoTable({
@@ -133,7 +133,7 @@ function exportToPDF() {
                 doc.setFontSize(8);
                 doc.setTextColor(150);
                 doc.text('Page ' + doc.internal.getNumberOfPages(), data.settings.margin.left, doc.internal.pageSize.height - 20);
-                doc.text('USTHB ScolaritÃ© - Document Officiel', 400, doc.internal.pageSize.height - 20);
+                doc.text('USTHB Scolarite - Document Officiel', 400, doc.internal.pageSize.height - 20);
             }
         });
         

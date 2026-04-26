@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -143,7 +143,7 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
         }
 
         .header-left img {
-            width: 55px;
+            width: 70px;
             height: auto;
         }
 
@@ -300,8 +300,8 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
 
 <!-- Contrôles (masqués à l'impression) -->
 <div class="controls">
-    <a href="etudiants.php" class="btn-back">â† Retour</a>
-    <button class="btn-print" onclick="window.print()">ðŸ–¨ï¸ Télécharger / Imprimer PDF</button>
+    <a href="etudiants.php" class="btn-back">← Retour</a>
+    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Télécharger / Imprimer PDF</button>
 
     <div class="section-filter">
         <label>Section :</label>
@@ -358,7 +358,7 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
         <thead>
             <!-- Ligne 1 : en-têtes principales -->
             <tr>
-                <th class="col-n" rowspan="2">NÂ°</th>
+                <th class="col-n" rowspan="2">N°</th>
                 <th class="col-palier" rowspan="2">Palier</th>
                 <th class="col-spe" rowspan="2">Spécialité</th>
                 <th class="col-sec" rowspan="2">Section</th>
