@@ -110,9 +110,24 @@ foreach ($all_notes as $n) {
         .final-summary .statut-badge { padding: 8px 15px; border-radius: 4px; border: 2px solid #000; color: #000; font-weight: 700; font-size: 16px; }
         .statut-admis { background: var(--valid-green); color: white; }
         .statut-ajourne { background: var(--invalid-red); color: white; }
-
-<button class="btn-print no-print" onclick="window.print()">??? Télécharger en PDF</button>
-<button class="btn-print no-print" onclick="window.print()">??? Télécharger en PDF</button>
+        .btn-print, .btn-back { 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        .btn-print { background: var(--primary-color); color: white; margin-left: 10px; }
+        .btn-back { background: #64748b; color: white; }
+        .btn-print:hover { background: #1e2b5a; transform: translateY(-2px); }
+        .btn-back:hover { background: #475569; transform: translateY(-2px); }
 
         @media print {
             body { background: white; padding: 0; }
@@ -123,7 +138,10 @@ foreach ($all_notes as $n) {
 </head>
 <body>
 
-<button class="btn-print no-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Télécharger en PDF</button>
+<div class="no-print" style="max-width: 210mm; margin: 0 auto; display: flex; justify-content: space-between;">
+    <a href="dashboard_etudiant.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour au Dashboard</a>
+    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer le Relevé</button>
+</div>
 
 <div class="releve-paper">
     <div class="official-header">
