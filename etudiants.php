@@ -71,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $query = "
     SELECT e.*,
-    (SELECT AVG(note) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 1) as moy_s1,
-    (SELECT AVG(note) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 2) as moy_s2,
-    (SELECT AVG(note) FROM notes WHERE etudiant_id = e.id) as moy_annuelle,
+    (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 1) as moy_s1,
+    (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 2) as moy_s2,
+    (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle,
     (SELECT COUNT(*) FROM notes WHERE etudiant_id = e.id) as nb_notes
     FROM etudiants e
     ORDER BY e.section ASC, e.nom ASC
@@ -128,7 +128,8 @@ include 'includes/sidebar.php';
                 <a href="etudiants.php?action=export&section=C"><i class="fa-solid fa-file-csv"></i> CSV — Section C</a>
             </div>
         </div>
-        <div class="badge" style="background:#2c3e80;color:white;margin-left:auto;">
+        <input type="text" id="searchInput" placeholder="🔍 Rechercher (nom, matricule...)" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 250px; margin-left: auto;">
+        <div class="badge" style="background:#2c3e80;color:white;margin-left:10px;">
             Total : <?= count($etudiants) ?> étudiants
         </div>
     </div>
@@ -395,6 +396,23 @@ if (dropZone) {
         }
     });
 }
+
+// Recherche dans la table
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.table-container tbody tr');
+            
+            rows.forEach(row => {
+                if (row.querySelector('.empty-row')) return;
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    }
+});
 </script>
 
 <?php include 'includes/footer.php'; ?>

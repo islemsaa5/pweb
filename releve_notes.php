@@ -30,10 +30,9 @@ if (!$etudiant) {
 }
 
 $query = "
-    SELECT n.note, m.intitule, m.coefficient, m.credits, m.semestre, m.code_module
-    FROM notes n 
-    JOIN modules m ON n.module_id = m.id 
-    WHERE n.etudiant_id = ?
+    SELECT m.code_module, m.intitule, m.coefficient, m.credits, m.semestre, n.note
+    FROM modules m 
+    LEFT JOIN notes n ON m.id = n.module_id AND n.etudiant_id = ?
     ORDER BY m.semestre ASC, m.intitule ASC
 ";
 $stmt = $pdo->prepare($query);
@@ -52,212 +51,273 @@ foreach ($all_notes as $n) {
     <meta charset="UTF-8">
     <title>Relevé de Notes - USTHB - <?= htmlspecialchars($etudiant['nom']) ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Outfit', sans-serif; background: #f4f7f6; padding: 30px; color: #333; }
-        .releve-paper { background: white; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 10px; border-top: 5px solid var(--primary-color); position: relative; }
+        @page { size: A4 landscape; margin: 10mm; }
+        body { font-family: 'Arial', sans-serif; background: #f4f7f6; padding: 20px; color: #000; margin: 0; }
+        .releve-paper { background: white; width: 277mm; min-height: 190mm; margin: 0 auto; padding: 15mm; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; box-sizing: border-box; }
         
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .header-left, .header-right { width: 40%; font-size: 10px; font-weight: bold; line-height: 1.3; }
+        .header-right { text-align: right; }
+        .header-center { width: 20%; text-align: center; }
+        .header-center img { width: 50px; margin-bottom: 5px; }
+        .duplicata { border: 2px solid #000; padding: 3px 20px; font-size: 16px; font-weight: bold; display: inline-block; letter-spacing: 2px; }
         
-        .official-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 30px; }
-        .official-header img { width: 90px; height: auto; object-fit: contain; }
-        .official-header .text { flex: 1; padding: 0 20px; font-size: 13px; line-height: 1.4; color: var(--primary-color); font-weight: 500; }
+        .info-section { display: flex; flex-wrap: wrap; margin-bottom: 5px; font-size: 11px; font-weight: bold; }
+        .info-col { width: 50%; }
+        .info-row { display: flex; margin-bottom: 3px; }
+        .info-label { width: 130px; }
+        .info-value { flex: 1; }
         
-        .releve-title { text-align: center; margin-bottom: 30px; }
-        .releve-title h1 { font-size: 28px; color: var(--primary-color); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #ccc; display: inline-block; padding-bottom: 5px; }
+        .title-center { text-align: center; font-size: 18px; font-weight: bold; letter-spacing: 1px; margin-bottom: 5px; }
         
+        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; border: 1px solid #000; }
+        th, td { border: 1px solid #000; padding: 3px 4px; text-align: center; font-size: 10px; }
+        th { background-color: #e8e8e8; font-weight: bold; }
+        .text-left { text-align: left !important; }
+        .text-right { text-align: right !important; }
         
-        .student-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #e2e8f0; }
-        .student-box p { margin: 5px 0; font-size: 14px; }
-        .student-box strong { color: var(--primary-color); }
-
+        .semester-row td { background-color: #f0f0f0; font-weight: bold; font-size: 11px; padding: 5px; }
+        .footer-stats { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 5px; }
         
-        table { 
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 2px;
-            border: 1px solid #000;
-            margin-bottom: 15px; 
-            background: #fff;
-        }
-        th { 
-            background: #fff; 
-            color: #000; 
-            font-weight: 700; 
-            text-align: center; 
-            padding: 10px; 
-            border: 1px solid #000; 
-            font-size: 12px; 
-            text-transform: uppercase; 
-        }
-        td { 
-            padding: 10px; 
-            border: 1px solid #333; 
-            font-size: 12px; 
-            color: #000;
-        }
-        tr:nth-child(even) { background: #fff; }
-        
-        .result-row td { 
-            background: #f8fafc !important; 
-            font-weight: 700; 
-            border: 2px solid #000;
-        }
-        
-        
-        .final-summary { margin-top: 40px; padding: 25px; border: 2px solid #000; border-radius: 4px; background: #fff; display: flex; justify-content: space-between; align-items: center; }
-        .final-summary .decision { font-size: 18px; font-weight: 700; color: #000; }
-        .final-summary .statut-badge { padding: 8px 15px; border-radius: 4px; border: 2px solid #000; color: #000; font-weight: 700; font-size: 16px; }
-        .statut-admis { background: var(--valid-green); color: white; }
-        .statut-ajourne { background: var(--invalid-red); color: white; }
         .btn-print, .btn-back { 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 10px;
-            font-family: 'Outfit', sans-serif;
-            text-decoration: none;
-            margin-bottom: 20px;
+            padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; text-decoration: none; margin-bottom: 15px;
         }
-        .btn-print { background: var(--primary-color); color: white; margin-left: 10px; }
-        .btn-back { background: #64748b; color: white; }
-        .btn-print:hover { background: #1e2b5a; transform: translateY(-2px); }
-        .btn-back:hover { background: #475569; transform: translateY(-2px); }
+        .btn-print { background: #000; color: white; margin-left: 10px; }
+        .btn-back { background: #6c757d; color: white; }
 
         @media print {
             body { background: white; padding: 0; }
-            .releve-paper { box-shadow: none; margin: 0; width: 100%; border: none; padding: 20px; }
+            .releve-paper { box-shadow: none; margin: 0; width: 100%; padding: 0; }
             .no-print { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="no-print" style="max-width: 210mm; margin: 0 auto; display: flex; justify-content: space-between;">
+<div class="no-print" style="max-width: 277mm; margin: 0 auto; display: flex; justify-content: space-between;">
     <a href="dashboard_etudiant.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour au Dashboard</a>
     <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer le Relevé</button>
 </div>
 
 <div class="releve-paper">
-    <div class="official-header">
-        <div class="text" style="text-align: left;">
-            <p>République Algérienne Démocratique et Populaire</p>
-            <p>Ministère de l'Enseignement Supérieur et de la Recherche Scientifique</p>
-            <p><strong>USTHB - Faculté d'Informatique</strong></p>
+    <div class="header">
+        <div class="header-left">
+            Ministère de l'Enseignement Supérieur et de la Recherche Scientifique<br>
+            université des sciences et de la technologie houari boumediène alger<br>
+            Faculté d'Informatique<br>
+            Département des Systèmes Informatiques
         </div>
-        <img src="assets/img/logo.png" alt="Logo USTHB">
-        <div class="text" style="text-align: right;">
-            <p>الجمهورية الجزائرية الديمقراطية الشعبية</p>
-            <p>وزارة التعليم العالي والبحث العلمي</p>
-            <p><strong>جامعة هواري بومدين للعلوم و التكنولوجيا</strong></p>
+        <div class="header-center">
+            <img src="assets/img/logo.png" alt="USTHB"><br>
+            <div class="duplicata">DUPLICATA</div>
+        </div>
+        <div class="header-right">
+            وزارة التعليم العالي والبحث العلمي<br>
+            جامعة هواري بومدين للعلوم و التكنولوجيا الجزائر<br>
+            كلية الإعلام الآلي<br>
+            قسم الأنظمة المعلوماتية
         </div>
     </div>
 
-    <div class="releve-title">
-        <h1>Relevé de Notes Annuel</h1>
-        <p style="margin-top: 10px; color: #64748b;">Année Académique : <strong>2025/2026</strong></p>
-    </div>
-
-    <div class="student-box">
-        <div>
-            <p><strong>Nom :</strong> <?= htmlspecialchars($etudiant['nom']) ?></p>
-            <p><strong>Prénom :</strong> <?= htmlspecialchars($etudiant['prenom']) ?></p>
-            <p><strong>Né(e) le :</strong> <?= $etudiant['date_naissance'] ? date('d/m/Y', strtotime($etudiant['date_naissance'])) : 'Non renseigné' ?></p>
+    <div class="info-section">
+        <div class="info-col">
+            <div class="info-row"><div class="info-label">Année</div><div class="info-value">2024/2025</div></div>
+            <div class="info-row"><div class="info-label">Nom:</div><div class="info-value"><?= strtoupper(htmlspecialchars($etudiant['nom'])) ?></div></div>
+            <div class="info-row"><div class="info-label">N°d'inscription:</div><div class="info-value">UN16042024<?= htmlspecialchars($etudiant['matricule']) ?></div></div>
+            <div class="info-row"><div class="info-label">Domaine:</div><div class="info-value">Mathématiques et Informatique</div></div>
+            <div class="info-row"><div class="info-label">Diplôme préparé:</div><div class="info-value">Licence</div></div>
+            <div class="info-row"><div class="info-label">Filière:</div><div class="info-value">Informatique</div></div>
         </div>
-        <div>
-            <p><strong>Matricule :</strong> <?= htmlspecialchars($etudiant['matricule']) ?></p>
-            <p><strong>Niveau :</strong> <?= htmlspecialchars($etudiant['niveau']) ?></p>
-            <p><strong>Section :</strong> Section <?= htmlspecialchars($etudiant['section']) ?></p>
+        <div class="info-col">
+            <div class="title-center">RELEVE DE NOTES</div>
+            <div class="info-row" style="margin-top: 5px;">
+                <div class="info-label" style="width:60px;">Prénom:</div><div class="info-value"><?= strtoupper(htmlspecialchars($etudiant['prenom'])) ?></div>
+                <div style="text-align: right; flex: 1;">Né(e) Le: <?= $etudiant['date_naissance'] ? date('d/m/Y', strtotime($etudiant['date_naissance'])) : '......' ?> à ............</div>
+            </div>
+            <div class="info-row"><div class="info-label" style="width:60px;">Niveau:</div><div class="info-value">Licence <?= htmlspecialchars($etudiant['niveau']) ?></div></div>
+            <div class="info-row"><div class="info-label" style="width:60px;">Spécialité:</div><div class="info-value">Ingénierie des systèmes informatiques et logiciels</div></div>
         </div>
     </div>
 
     <?php 
-        $tot_pts = 0; $tot_coeff = 0; $tot_creds = 0;
+        $semestres_data = [1 => [], 2 => []];
+        foreach ($all_notes as $n) {
+            $semestres_data[$n['semestre']][] = $n;
+        }
+
+        $ue_mapping = [
+            1 => [
+                ['nature' => 'U.E.F', 'code' => 'C00F0001S3', 'modules' => ['IS1', 'ARCHI1', 'ALGO3']],
+                ['nature' => 'U.E.M', 'code' => 'C00M0001S3', 'modules' => ['PROBA', 'ANUM', 'LOGIQUE']],
+                ['nature' => 'U.E.M', 'code' => 'C00M0002S3', 'modules' => ['POO']],
+                ['nature' => 'U.E.T', 'code' => 'C00T0001S3', 'modules' => ['ANG1']]
+            ],
+            2 => [
+                ['nature' => 'U.E.F', 'code' => 'C00F0001S4', 'modules' => ['GL1', 'BD1']],
+                ['nature' => 'U.E.F', 'code' => 'C00F0002S4', 'modules' => ['ARCHI2', 'SYS1']],
+                ['nature' => 'U.E.M', 'code' => 'C00M0001S4', 'modules' => ['THG', 'PWEB']],
+                ['nature' => 'U.E.T', 'code' => 'C00T0001S4', 'modules' => ['ANG2']]
+            ]
+        ];
+
+        $global_tot_credits = 0;
+        $moyennes_sem = [1 => 0, 2 => 0];
+        $credits_sem = [1 => 0, 2 => 0];
     ?>
 
-    <?php foreach ([1, 2] as $s): ?>
-        <div class="semestre-title">SEMESTRE <?= $s ?></div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 45%;">Module</th>
-                    <th style="width: 15%; text-align: center;">Note</th>
-                    <th style="width: 15%; text-align: center;">Coefficient</th>
-                    <th style="width: 15%; text-align: center;">Crédits</th>
-                    <th style="width: 10%; text-align: center;">État</th>
-                </tr>
-            </thead>
-            <tbody>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="7">Unité d'enseignement (U.E)</th>
+                <th colspan="6">Matière(s) constitutive(s) de l'unité d'enseignement</th>
+            </tr>
+            <tr>
+                <th>Nature</th>
+                <th>Code Ue</th>
+                <th>Crédits</th>
+                <th>Coef</th>
+                <th>Moy</th>
+                <th>Crédits</th>
+                <th>Sess</th>
+                <th class="text-left">Intitulé(s)</th>
+                <th>Crédits</th>
+                <th>Coef</th>
+                <th>Moy</th>
+                <th>Crédits</th>
+                <th>Sess</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ([1, 2] as $s_idx): ?>
                 <?php 
-                $s_pts = 0; $s_coeff = 0; $s_creds_obtenus = 0;
-                if (!empty($semestres[$s])):
-                foreach ($semestres[$s] as $n): 
-                    $s_pts += ($n['note'] * $n['coefficient']);
-                    $s_coeff += $n['coefficient'];
-                    $cred_obtenu = ($n['note'] >= 10) ? $n['credits'] : 0;
-                    $s_creds_obtenus += $cred_obtenu;
+                $s_display = (strpos($etudiant['niveau'], '2eme') !== false) ? ($s_idx + 2) : $s_idx;
+                $s_notes = $semestres_data[$s_idx] ?? [];
+                
+                $ue_groups = [];
+                $mapped_codes = [];
+                foreach ($ue_mapping[$s_idx] as $ue_def) {
+                    $group_notes = [];
+                    foreach ($s_notes as $n) {
+                        if (in_array($n['code_module'], $ue_def['modules'])) {
+                            $group_notes[] = $n;
+                            $mapped_codes[] = $n['code_module'];
+                        }
+                    }
+                    if (!empty($group_notes)) {
+                        $ue_groups[] = ['def' => $ue_def, 'notes' => $group_notes];
+                    }
+                }
+                
+                $unmapped = [];
+                foreach ($s_notes as $n) {
+                    if (!in_array($n['code_module'], $mapped_codes)) {
+                        $unmapped[] = $n;
+                    }
+                }
+                if (!empty($unmapped)) {
+                    $ue_groups[] = ['def' => ['nature' => 'U.E.A', 'code' => 'AUTRE'], 'notes' => $unmapped];
+                }
+                
+                $sem_tot_pts = 0;
+                $sem_tot_coeff = 0;
+                $sem_tot_credits_acquis = 0;
+                
+                foreach ($ue_groups as $group) {
+                    $ue = $group['def'];
+                    $notes = $group['notes'];
+                    $rowspan = count($notes);
+                    
+                    $ue_coeff = 0; $ue_pts = 0; $ue_tot_credits = 0;
+                    foreach ($notes as $n) {
+                        $note_val = $n['note'] !== null ? (float)$n['note'] : 0.00;
+                        $ue_coeff += $n['coefficient'];
+                        $ue_pts += ($note_val * $n['coefficient']);
+                        $ue_tot_credits += $n['credits'];
+                    }
+                    $ue_moy = $ue_coeff > 0 ? $ue_pts / $ue_coeff : 0;
+                    
+                    $ue_credits_acquis = 0;
+                    if ($ue_moy >= 10) {
+                        $ue_credits_acquis = $ue_tot_credits;
+                    } else {
+                        foreach ($notes as $n) {
+                            $note_val = $n['note'] !== null ? (float)$n['note'] : 0.00;
+                            if ($note_val >= 10) {
+                                $ue_credits_acquis += $n['credits'];
+                            }
+                        }
+                    }
+                    
+                    $sem_tot_pts += $ue_pts;
+                    $sem_tot_coeff += $ue_coeff;
+                    $sem_tot_credits_acquis += $ue_credits_acquis;
+                    
+                    $first = true;
+                    foreach ($notes as $n) {
+                        $note_val = $n['note'] !== null ? (float)$n['note'] : 0.00;
+                        $mod_credits_acquis = ($ue_moy >= 10 || $note_val >= 10) ? $n['credits'] : 0;
+                        
+                        echo '<tr>';
+                        if ($first) {
+                            echo '<td rowspan="'.$rowspan.'">'.$ue['nature'].'</td>';
+                            echo '<td rowspan="'.$rowspan.'">'.$ue['code'].'</td>';
+                            echo '<td rowspan="'.$rowspan.'">'.str_pad($ue_tot_credits, 2, '0', STR_PAD_LEFT).'</td>';
+                            echo '<td rowspan="'.$rowspan.'">'.number_format($ue_coeff, 1, '.', '').'</td>';
+                            echo '<td rowspan="'.$rowspan.'">'.str_pad(number_format($ue_moy, 2, '.', ''), 5, '0', STR_PAD_LEFT).'</td>';
+                            echo '<td rowspan="'.$rowspan.'">'.str_pad($ue_credits_acquis, 2, '0', STR_PAD_LEFT).'</td>';
+                            echo '<td rowspan="'.$rowspan.'">N</td>';
+                            $first = false;
+                        }
+                        
+                        echo '<td class="text-left">'.htmlspecialchars($n['code_module'].' : '.$n['intitule']).'</td>';
+                        echo '<td>'.number_format($n['credits'], 1, '.', '').'</td>';
+                        echo '<td>'.number_format($n['coefficient'], 1, '.', '').'</td>';
+                        echo '<td>'.str_pad(number_format($note_val, 2, '.', ''), 5, '0', STR_PAD_LEFT).'</td>';
+                        echo '<td>'.number_format($mod_credits_acquis, 1, '.', '').'</td>';
+                        echo '<td>N</td>';
+                        echo '</tr>';
+                    }
+                }
+                
+                $sem_moy = $sem_tot_coeff > 0 ? $sem_tot_pts / $sem_tot_coeff : 0;
+                $moyennes_sem[$s_idx] = $sem_moy;
+                $credits_sem[$s_idx] = $sem_tot_credits_acquis;
+                $global_tot_credits += $sem_tot_credits_acquis;
                 ?>
-                <tr>
-                    <td><strong><?= htmlspecialchars($n['intitule']) ?></strong></td>
-                    <td style="text-align: center; color: <?= $n['note'] >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>; font-weight: 600;">
-                        <?= number_format($n['note'], 2) ?>
-                    </td>
-                    <td style="text-align: center;"><?= $n['coefficient'] ?></td>
-                    <td style="text-align: center;"><?= $n['credits'] ?> (<?= $cred_obtenu ?>)</td>
-                    <td style="text-align: center;">
-                        <span style="color: <?= $n['note'] >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>; font-weight: bold;">
-                            <?= $n['note'] >= 10 ? 'V' : 'X' ?>
-                        </span>
-                    </td>
+                <tr class="semester-row">
+                    <td colspan="4" class="text-left">Moyenne du Semestre <?= $s_display ?> :</td>
+                    <td colspan="3" class="text-left"><?= str_pad(number_format($sem_moy, 2, '.', ''), 5, '0', STR_PAD_LEFT) ?></td>
+                    <td colspan="4" class="text-right">Crédits du Semestre <?= $s_display ?> :</td>
+                    <td colspan="1"><?= str_pad($sem_tot_credits_acquis, 2, '0', STR_PAD_LEFT) ?></td>
+                    <td colspan="1">Session: N</td>
                 </tr>
-                <?php endforeach; endif; ?>
-
-                <?php 
-                    $s_moy = $s_coeff > 0 ? $s_pts / $s_coeff : 0;
-                    $tot_pts += $s_pts;
-                    $tot_coeff += $s_coeff;
-                    $tot_creds += $s_creds_obtenus;
-                ?>
-                <tr class="result-row">
-                    <td>Moyenne Semestrielle <?= $s ?></td>
-                    <td style="text-align: center; background: #e2e8f0;"><?= number_format($s_moy, 2) ?></td>
-                    <td colspan="2" style="text-align: right;">Crédits obtenus :</td>
-                    <td style="text-align: center; background: #e2e8f0;"><?= $s_creds_obtenus ?></td>
-                </tr>
-            </tbody>
-        </table>
-    <?php endforeach; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
     <?php 
-        $moy_annuelle = $tot_coeff > 0 ? $tot_pts / $tot_coeff : 0;
+        $moy_annuelle = ($moyennes_sem[1] + $moyennes_sem[2]) / 2;
         $admis = ($moy_annuelle >= 10);
+        $credits_cursus = (strpos($etudiant['niveau'], '2eme') !== false ? 60 : 0) + $global_tot_credits;
     ?>
 
-    <div class="final-summary">
-        <div>
-            <div class="decision">MOYENNE ANNUELLE : <?= number_format($moy_annuelle, 2) ?> / 20</div>
-            <p style="margin-top: 5px; color: #64748b;">Total Crédits Cumulés : <strong><?= $tot_creds ?></strong></p>
-        </div>
-        <div class="statut-badge <?= $admis ? 'statut-admis' : 'statut-ajourne' ?>">
-            DÉCISION : <?= $admis ? 'ADMIS(E)' : 'AJOURNÉ(E)' ?>
-        </div>
+    <div class="footer-stats">
+        <div style="width: 30%;">Moyenne &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <?= str_pad(number_format($moy_annuelle, 2, '.', ''), 5, '0', STR_PAD_LEFT) ?></div>
+        <div style="width: 30%;">Décision: &nbsp;&nbsp; <?= $admis ? 'Admis(e)' : 'Ajourné(e)' ?></div>
+        <div style="width: 40%; text-align: right; font-weight: normal;">N: Session Normale &nbsp;&nbsp; R: Session Rattrapage</div>
+    </div>
+    <div class="footer-stats" style="margin-top: 2px;">
+        <div style="width: 30%;">Total des crédits cumulés pour l'année: &nbsp;&nbsp; <?= $global_tot_credits ?></div>
+        <div style="width: 30%;">Total des crédits cumulés dans le cursus: <?= $credits_cursus ?></div>
+        <div style="width: 40%;"></div>
     </div>
 
-    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 13px;">
-        <div style="text-align: center;">
-            <p>Le Chef de Département</p>
-            <br><br>
-            <p>_______________________</p>
-        </div>
-        <div style="text-align: right;">
-            <p>Fait à Alger, le <?= date('d/m/Y') ?></p>
-            <p>PWEB Project Management System</p>
-        </div>
+    <div style="margin-top: 20px; text-align: right; font-size: 11px; font-weight: bold; padding-right: 50px;">
+        <p>Le chef de département</p>
+        <br><br><br>
+        <p>Le: <?= date('d-m-Y') ?></p>
     </div>
 </div>
 

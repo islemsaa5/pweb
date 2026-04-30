@@ -8,7 +8,7 @@
  * - DAHMANI Anais (242431679715)
  */
 $host = '127.0.0.1';
-$port=3306; // Standard port (change to 3307 if using XAMPP custom config)
+$port=3307; 
 $dbname = 'gestion_scolarite';
 $user = 'root';
 $pass = '';

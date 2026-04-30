@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -54,6 +54,26 @@ include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
 
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+/* Custom styling for Select2 to match the theme */
+.select2-container .select2-selection--single {
+    height: 35px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 35px;
+    font-size: 13px;
+    color: #555;
+    padding-left: 10px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 33px;
+}
+</style>
+
 <div class="main-content">
     <div class="page-header">
         <h1>Saisie des Notes</h1>
@@ -71,7 +91,7 @@ include 'includes/sidebar.php';
                 
                 <div class="form-group">
                     <label>Etudiant</label>
-                    <select name="etudiant_id" required>
+                    <select name="etudiant_id" id="etudiantSelectAdmin" required>
                         <option value="">-- Selectionner --</option>
                         <?php foreach ($etudiants as $e): ?>
                         <option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['matricule'] . ' - ' . $e['nom'] . ' ' . $e['prenom']) ?></option>
@@ -81,7 +101,7 @@ include 'includes/sidebar.php';
                 
                 <div class="form-group">
                     <label>Module</label>
-                    <select name="module_id" required>
+                    <select name="module_id" id="moduleSelectAdmin" required>
                         <option value="">-- Selectionner --</option>
                         <?php foreach ($modules as $m): ?>
                         <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['code_module'] . ' - ' . $m['intitule']) ?></option>
@@ -134,5 +154,33 @@ include 'includes/sidebar.php';
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#etudiantSelectAdmin').select2({
+        placeholder: "-- Selectionner --",
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return "Aucun étudiant trouvé";
+            }
+        }
+    });
+    
+    $('#moduleSelectAdmin').select2({
+        placeholder: "-- Selectionner --",
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return "Aucun module trouvé";
+            }
+        }
+    });
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

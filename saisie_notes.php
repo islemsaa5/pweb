@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Projet: Gestion de Scolarité USTHB
  * Équipe:
@@ -83,6 +83,31 @@ include 'includes/header.php';
 include 'includes/sidebar.php';
 ?>
 
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+/* Custom styling for Select2 to match the theme */
+.select2-container .select2-selection--single {
+    height: 35px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 35px;
+    font-size: 13px;
+    color: #555;
+    padding-left: 10px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 33px;
+}
+.select2-results__group {
+    background-color: #f8f9fa;
+    color: #2c3e80;
+    font-weight: bold;
+}
+</style>
+
 <div class="main-content">
     <div class="page-header">
         <h1>Saisie des Notes</h1>
@@ -127,14 +152,14 @@ include 'includes/sidebar.php';
 
                 <div class="form-group">
                     <label>Étudiant (groupé par section)</label>
-                    <select name="etudiant_id" required>
+                    <select name="etudiant_id" id="etudiantSelect" required>
                         <option value="">-- Sélectionner un étudiant --</option>
                         <?php foreach ($etudiants_par_section as $sec => $liste): ?>
                         <optgroup label="Section <?= htmlspecialchars($sec) ?>">
                             <?php foreach ($liste as $e): ?>
                             <option value="<?= $e['id'] ?>">
                                 <?= htmlspecialchars($e['matricule'] . ' - ' . $e['nom'] . ' ' . $e['prenom']) ?>
-                                <?= isset($notes_existantes[$e['id']]) ? ' âœ” ' . $notes_existantes[$e['id']]['note'] . '/20' : '' ?>
+                                <?= isset($notes_existantes[$e['id']]) ? ' ✔ ' . $notes_existantes[$e['id']]['note'] . '/20' : '' ?>
                             </option>
                             <?php endforeach; ?>
                         </optgroup>
@@ -170,7 +195,7 @@ include 'includes/sidebar.php';
                         <i class="fa-solid fa-list-check"></i>
                         Notes saisies
                         <?php if ($mod_info): ?>
-                            â€” <?= htmlspecialchars($mod_info['code_module'] . ' : ' . $mod_info['intitule']) ?>
+                            — <?= htmlspecialchars($mod_info['code_module'] . ' : ' . $mod_info['intitule']) ?>
                         <?php endif; ?>
                     </h3>
                     <span class="badge" style="background:#2c3e80;color:white;">
@@ -229,7 +254,21 @@ include 'includes/sidebar.php';
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+$(document).ready(function() {
+    $('#etudiantSelect').select2({
+        placeholder: "-- Sélectionner un étudiant --",
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return "Aucun étudiant trouvé";
+            }
+        }
+    });
+});
 
 document.getElementById('moduleSelect').addEventListener('change', function() {
     const id = this.value;

@@ -20,14 +20,14 @@ $section_filter = $_GET['section'] ?? 'all';
 if ($section_filter !== 'all') {
     $stmt = $pdo->prepare("
         SELECT e.*,
-        (SELECT AVG(note) FROM notes WHERE etudiant_id = e.id) as moy_annuelle
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle
         FROM etudiants e WHERE section = ? ORDER BY nom ASC
     ");
     $stmt->execute([$section_filter]);
 } else {
     $stmt = $pdo->query("
         SELECT e.*,
-        (SELECT AVG(note) FROM notes WHERE etudiant_id = e.id) as moy_annuelle
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle
         FROM etudiants e ORDER BY section ASC, nom ASC
     ");
 }
@@ -49,6 +49,7 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -58,19 +59,24 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
             padding: 20px;
             font-size: 11px;
             color: #000;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
-        
         .controls {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             align-items: center;
             flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .btn-print {
-            background: var(--primary-color);
+            background: #2c3e80;
             color: white;
             border: none;
             padding: 10px 22px;
@@ -81,9 +87,10 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: 0.2s;
         }
 
-        .btn-print:hover { background: var(--primary-dark); }
+        .btn-print:hover { background: #1a254d; }
 
         .btn-back {
             background: #6c757d;
@@ -116,35 +123,52 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
             cursor: pointer;
         }
 
-        
         .a4-page {
             background: white;
             width: 297mm;
             min-height: 210mm;
             margin: 0 auto;
-            padding: 10mm 8mm;
+            padding: 10mm 15mm;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
+        .republique-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .republique-header h2 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
         
+        .republique-header h3 {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 2px;
+            color: #333;
+        }
+
         .official-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 6px;
-            margin-bottom: 6px;
+            border-bottom: 2px solid #2c3e80;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .header-left {
+        .header-left, .header-right {
+            width: 120px;
             display: flex;
-            align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
-        .header-left img {
-            width: 70px;
+        .header-left img, .header-right img {
+            width: 80px;
             height: auto;
+            object-fit: contain;
         }
 
         .header-center {
@@ -153,135 +177,120 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
         }
 
         .header-center .univ-name {
-            font-size: 10px;
+            font-size: 13px;
             font-weight: 700;
             color: #000;
             line-height: 1.4;
         }
 
+        .header-center .fac-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2c3e80;
+            margin-top: 4px;
+        }
+
         .header-center .year {
-            font-size: 9px;
-            color: #333;
-            margin-top: 2px;
+            font-size: 11px;
+            color: #555;
+            margin-top: 4px;
+            font-style: italic;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-align: right;
-        }
-
-        .header-right .fac-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--primary-color);
-            line-height: 1.3;
-            border: 2px solid var(--primary-color);
-            padding: 4px 8px;
-            text-align: center;
-        }
-
-        .header-right img {
-            width: 50px;
-            height: auto;
-        }
-
-        
         .list-title {
             text-align: center;
-            margin: 6px 0 5px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 6px;
         }
 
         .list-title h1 {
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 700;
-            color: #000;
+            color: #2c3e80;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .list-title .version {
-            font-size: 8px;
+            font-size: 10px;
             color: #666;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
-        
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 8.5px;
+            font-size: 9px;
+            margin-bottom: 15px;
         }
 
         th, td {
-            border: 1px solid #333;
-            padding: 2px 3px;
+            border: 1px solid #777;
+            padding: 4px;
             text-align: center;
             vertical-align: middle;
             white-space: nowrap;
         }
 
         thead tr:first-child th {
-            background: #dce1f0;
+            background: #dce1f0 !important;
+            font-weight: 700;
+            font-size: 10px;
+            color: #2c3e80;
+        }
+
+        thead tr:last-child th {
+            background: #eef0f8 !important;
             font-weight: 700;
             font-size: 8px;
         }
 
-        thead tr:last-child th {
-            background: #eef0f8;
-            font-weight: 700;
-            font-size: 7.5px;
-        }
+        td.nom-cell { text-align: left; font-weight: 600; min-width: 30mm; }
+        td.prenom-cell { text-align: left; min-width: 25mm; }
 
-        td.nom-cell { text-align: left; font-weight: 600; min-width: 28mm; }
-        td.prenom-cell { text-align: left; min-width: 22mm; }
+        tr:nth-child(even) td { background: #f9f9ff !important; }
+        tr:nth-child(odd) td { background: #fff !important; }
 
-        tr:nth-child(even) td { background: #f9f9ff; }
-        tr:nth-child(odd) td { background: #fff; }
-
-        
         .pres-header { background: #c8d0e8 !important; }
-        .pres-subheader { background: #dce6f5 !important; font-size: 7px !important; }
+        .pres-subheader { background: #dce6f5 !important; font-size: 8px !important; }
         .pres-col { width: 6mm; min-width: 6mm; font-size: 7px; color: #aaa; }
 
-        
         .etat-adm { color: #155724; font-weight: 700; }
         .etat-ajr { color: #721c24; font-weight: 700; }
         .etat-adc { color: #856404; font-weight: 700; }
 
-        
-        .col-n { width: 6mm; font-size: 8px; color: #555; }
-        .col-palier { width: 8mm; }
+        .col-n { width: 6mm; font-size: 9px; color: #555; }
+        .col-palier { width: 10mm; }
         .col-spe { width: 12mm; }
-        .col-sec { width: 10mm; }
-        .col-mat { width: 26mm; font-family: monospace; font-size: 8px; }
-        .col-etat { width: 10mm; }
+        .col-sec { width: 12mm; font-weight: bold; }
+        .col-mat { width: 28mm; font-family: monospace; font-size: 10px; font-weight: bold; }
+        .col-etat { width: 12mm; }
         .col-gtd { width: 14mm; }
         .col-gtp { width: 14mm; }
 
-        
         .footer-line {
-            margin-top: 5px;
-            border-top: 1px solid #999;
-            padding-top: 3px;
+            margin-top: 15px;
+            border-top: 1px solid #2c3e80;
+            padding-top: 8px;
             display: flex;
             justify-content: space-between;
-            font-size: 7.5px;
-            color: #555;
+            font-size: 10px;
+            color: #444;
+            font-weight: 500;
         }
 
-        
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 8mm;
+                margin: 5mm;
             }
 
             body {
                 background: white;
                 padding: 0;
-                font-size: 10px;
             }
 
             .controls { display: none !important; }
@@ -293,6 +302,23 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
                 padding: 0;
                 margin: 0;
             }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            thead {
+                display: table-header-group;
+            }
+            
+            tfoot {
+                display: table-footer-group;
+            }
         }
     </style>
 </head>
@@ -300,57 +326,56 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
 
 <!-- Contrôles (masqués à l'impression) -->
 <div class="controls">
-    <a href="etudiants.php" class="btn-back">← Retour</a>
-    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Télécharger / Imprimer PDF</button>
+    <a href="etudiants.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer / Sauvegarder en PDF</button>
 
     <div class="section-filter">
-        <label>Section :</label>
+        <label><i class="fa-solid fa-filter"></i> Section :</label>
         <select onchange="window.location.href='liste_section_pdf.php?section='+this.value">
-            <option value="all" <?= $section_filter === 'all' ? 'selected' : '' ?>>Toutes</option>
+            <option value="all" <?= $section_filter === 'all' ? 'selected' : '' ?>>Toutes les sections</option>
             <option value="A" <?= $section_filter === 'A' ? 'selected' : '' ?>>Section A</option>
             <option value="B" <?= $section_filter === 'B' ? 'selected' : '' ?>>Section B</option>
             <option value="C" <?= $section_filter === 'C' ? 'selected' : '' ?>>Section C</option>
         </select>
     </div>
 
-    <span style="font-size:12px; color:#666; margin-left:10px;">
-        ðŸ“‹ <?= count($etudiants) ?> étudiant(s) â€” <?= $section_label ?>
+    <span style="font-size:13px; font-weight:bold; color:#2c3e80; margin-left:15px; border-left: 2px solid #ccc; padding-left: 15px;">
+        <i class="fa-solid fa-users"></i> <?= count($etudiants) ?> étudiant(s) au total
     </span>
 </div>
 
 <!-- Feuille A4 paysage -->
 <div class="a4-page">
 
-    <!-- En-tête officiel -->
+    <!-- En-tête République -->
+    <div class="republique-header">
+        <h2>République Algérienne Démocratique et Populaire</h2>
+        <h3>Ministère de l'Enseignement Supérieur et de la Recherche Scientifique</h3>
+    </div>
+
+    <!-- En-tête officiel USTHB -->
     <div class="official-header">
         <div class="header-left">
-            <img src="assets/img/logo.png" alt="USTHB">
-            <div>
-                <div style="font-size:8px; font-weight:700; line-height:1.3; color:#000;">USTHB</div>
-                <div style="font-size:7px; color:#444;">Bab Ezzouar, Alger</div>
-            </div>
+            <img src="assets/img/logo.png" alt="USTHB Logo">
         </div>
 
         <div class="header-center">
-            <div class="univ-name">
-                Université des Sciences et de la Technologie Houari Boumediene<br>
-                Faculté d'Informatique
-            </div>
+            <div class="univ-name">Université des Sciences et de la Technologie Houari Boumediene</div>
+            <div class="fac-name">Faculté d'Informatique</div>
             <div class="year">Année Universitaire 2025/2026</div>
         </div>
 
         <div class="header-right">
-            <div class="fac-label">FACULTÉ<br>D'INFORMATIQUE</div>
-            <img src="assets/img/logo.png" alt="Logo Faculté">
+            <img src="assets/img/logo.png" alt="Faculté Logo">
         </div>
     </div>
 
     <!-- Titre -->
     <div class="list-title">
-        <h1>Liste des étudiants : <?= htmlspecialchars($niveau_label . ' ' . $specialite) ?>
-            <?= $section_filter !== 'all' ? htmlspecialchars(' ' . strtoupper($section_filter)) : '' ?>
+        <h1>Liste Officielle des Étudiants : <?= htmlspecialchars($niveau_label . ' ' . $specialite) ?>
+            <?= $section_filter !== 'all' ? htmlspecialchars(' — ' . strtoupper($section_filter)) : '' ?>
         </h1>
-        <div class="version">Version <?= date('d/m/Y H:i') ?></div>
+        <div class="version">Document généré le <?= date('d/m/Y à H:i') ?></div>
     </div>
 
     <!-- Tableau des étudiants -->
@@ -406,12 +431,12 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
                 <td class="col-spe"><?= htmlspecialchars($e['specialite'] ?? 'ISIL') ?></td>
                 <td class="col-sec"><?= htmlspecialchars(strtoupper($e['section'] ?? '')) ?></td>
                 <td class="col-mat"><?= htmlspecialchars($e['matricule']) ?></td>
-                <td class="nom-cell"><?= htmlspecialchars($e['nom']) ?></td>
-                <td class="prenom-cell"><?= htmlspecialchars($e['prenom']) ?></td>
+                <td class="nom-cell"><?= htmlspecialchars(strtoupper($e['nom'])) ?></td>
+                <td class="prenom-cell"><?= htmlspecialchars(ucfirst(strtolower($e['prenom']))) ?></td>
                 <td class="col-etat <?= $etat_class ?>"><?= $etat ?></td>
                 <td class="col-gtd"><?= $e['groupe_td'] ?? '' ?></td>
                 <td class="col-gtp"><?= $e['groupe_tp'] ?? '' ?></td>
-                <!-- 14 Ã— 3 colonnes de présence vides -->
+                <!-- 14 x 3 colonnes de présence vides -->
                 <?php for ($s = 1; $s <= 14; $s++): ?>
                 <td class="pres-col"></td>
                 <td class="pres-col"></td>
@@ -422,7 +447,7 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
 
             <?php if (empty($etudiants)): ?>
             <tr>
-                <td colspan="52" style="text-align:center; padding:20px; color:#888;">
+                <td colspan="52" style="text-align:center; padding:30px; color:#888; font-size: 12px; font-style: italic;">
                     Aucun étudiant trouvé pour cette section.
                 </td>
             </tr>
@@ -432,9 +457,9 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
 
     <!-- Pied de page -->
     <div class="footer-line">
-        <span>Faculté d'Informatique â€” USTHB â€” Département Informatique</span>
-        <span>Généré le <?= date('d/m/Y à H:i') ?></span>
+        <span>Faculté d'Informatique — USTHB — Département Informatique</span>
         <span>Total : <?= count($etudiants) ?> étudiant(s)</span>
+        <span>USTHB Scolarité - Document Officiel</span>
     </div>
 
 </div><!-- fin .a4-page -->
