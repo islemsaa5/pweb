@@ -20,14 +20,16 @@ $section_filter = $_GET['section'] ?? 'all';
 if ($section_filter !== 'all') {
     $stmt = $pdo->prepare("
         SELECT e.*,
-        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 1) as moy_s1,
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 2) as moy_s2
         FROM etudiants e WHERE section = ? ORDER BY nom ASC
     ");
     $stmt->execute([$section_filter]);
 } else {
     $stmt = $pdo->query("
         SELECT e.*,
-        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 1) as moy_s1,
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 2) as moy_s2
         FROM etudiants e ORDER BY section ASC, nom ASC
     ");
 }
@@ -409,7 +411,14 @@ $page_title = "Liste des étudiants : $niveau_label $specialite" . ($section_fil
         </thead>
         <tbody>
             <?php $n = 1; foreach ($etudiants as $e):
-                $moy = $e['moy_annuelle'];
+                $m1 = $e['moy_s1'] !== null ? (float)$e['moy_s1'] : null;
+                $m2 = $e['moy_s2'] !== null ? (float)$e['moy_s2'] : null;
+                
+                $moy = null;
+                if ($m1 !== null || $m2 !== null) {
+                    $moy = (($m1 ?? 0) + ($m2 ?? 0)) / 2;
+                }
+
                 if ($moy === null)       $etat = '';
                 elseif ($moy >= 10)      $etat = 'ADM';
                 else                     $etat = 'AJR';

@@ -27,7 +27,8 @@ if (!empty($sections)) {
     $placeholders = str_repeat('?,', count($sections) - 1) . '?';
     $stmt = $pdo->prepare("
         SELECT e.*,
-        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id) as moy_annuelle
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 1) as moy_s1,
+        (SELECT SUM(n.note * m.coefficient) / SUM(m.coefficient) FROM notes n JOIN modules m ON n.module_id = m.id WHERE n.etudiant_id = e.id AND m.semestre = 2) as moy_s2
         FROM etudiants e 
         WHERE section IN ($placeholders) 
         ORDER BY nom
@@ -67,7 +68,14 @@ include 'includes/sidebar.php';
             </thead>
             <tbody>
                 <?php foreach ($etudiants as $e): 
-                    $annuelle = $e['moy_annuelle'] !== null ? round($e['moy_annuelle'], 2) : null;
+                    $m1 = $e['moy_s1'] !== null ? (float)$e['moy_s1'] : null;
+                    $m2 = $e['moy_s2'] !== null ? (float)$e['moy_s2'] : null;
+                    
+                    $annuelle = null;
+                    if ($m1 !== null || $m2 !== null) {
+                        $annuelle = (($m1 ?? 0) + ($m2 ?? 0)) / 2;
+                    }
+
                     if ($annuelle === null)      { $etat_class = ''; $etat = 'N/A'; }
                     elseif ($annuelle >= 10)     { $etat_class = 'badge-admis'; $etat = 'ADM'; }
                     else                         { $etat_class = 'badge-ajourne'; $etat = 'AJR'; }

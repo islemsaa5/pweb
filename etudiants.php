@@ -157,7 +157,13 @@ include 'includes/sidebar.php';
                 <?php
                     $m1 = $e['moy_s1'] !== null ? round($e['moy_s1'], 2) : null;
                     $m2 = $e['moy_s2'] !== null ? round($e['moy_s2'], 2) : null;
-                    $annuelle = $e['moy_annuelle'] !== null ? round($e['moy_annuelle'], 2) : null;
+                    
+                    $annuelle = null;
+                    if ($m1 !== null || $m2 !== null) {
+                        $val_m1 = $m1 !== null ? $m1 : 0;
+                        $val_m2 = $m2 !== null ? $m2 : 0;
+                        $annuelle = round(($val_m1 + $val_m2) / 2, 2);
+                    }
 
                     if ($annuelle === null)      { $etat_class = ''; $etat = 'N/A'; }
                     elseif ($annuelle >= 10)     { $etat_class = 'badge-admis'; $etat = 'ADM'; }

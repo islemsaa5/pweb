@@ -30,9 +30,10 @@ if (!$etudiant) {
 }
 
 $query = "
-    SELECT m.code_module, m.intitule, m.coefficient, m.credits, m.semestre, n.note
+    SELECT m.code_module, m.intitule, m.coefficient, m.credits, m.semestre, n.note, e.nom as prof_nom
     FROM modules m 
     LEFT JOIN notes n ON m.id = n.module_id AND n.etudiant_id = ?
+    LEFT JOIN enseignants e ON m.enseignant_id = e.id
     ORDER BY m.semestre ASC, m.intitule ASC
 ";
 $stmt = $pdo->prepare($query);
@@ -96,9 +97,17 @@ foreach ($all_notes as $n) {
 </head>
 <body>
 
+<?php $is_duplicata = isset($_GET['duplicata']) && $_GET['duplicata'] == '1'; ?>
 <div class="no-print" style="max-width: 277mm; margin: 0 auto; display: flex; justify-content: space-between;">
-    <a href="dashboard_etudiant.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour au Dashboard</a>
-    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer le Relevé</button>
+    <a href="<?= $_SESSION['role'] === 'admin' ? 'etudiants.php' : 'dashboard_etudiant.php' ?>" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+    <div>
+        <?php if (!$is_duplicata): ?>
+            <a href="releve_notes.php?id=<?= $user_id ?>&duplicata=1" class="btn-print" style="background: #e67e22; text-decoration: none;"><i class="fa-solid fa-copy"></i> Version Duplicata</a>
+        <?php else: ?>
+            <a href="releve_notes.php?id=<?= $user_id ?>" class="btn-print" style="background: #2c3e80; text-decoration: none;"><i class="fa-solid fa-file-invoice"></i> Version Originale</a>
+        <?php endif; ?>
+        <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimer</button>
+    </div>
 </div>
 
 <div class="releve-paper">
@@ -111,7 +120,9 @@ foreach ($all_notes as $n) {
         </div>
         <div class="header-center">
             <img src="assets/img/logo.png" alt="USTHB"><br>
+            <?php if ($is_duplicata): ?>
             <div class="duplicata">DUPLICATA</div>
+            <?php endif; ?>
         </div>
         <div class="header-right">
             وزارة التعليم العالي والبحث العلمي<br>
@@ -271,7 +282,13 @@ foreach ($all_notes as $n) {
                             $first = false;
                         }
                         
-                        echo '<td class="text-left">'.htmlspecialchars($n['code_module'].' : '.$n['intitule']).'</td>';
+                        $prof_label = !empty($n['prof_nom']) ? ' ('.htmlspecialchars($n['prof_nom']).')' : '';
+                        echo '<td class="text-left">';
+                        echo '<strong>'.htmlspecialchars($n['code_module'].' : '.$n['intitule']).'</strong>';
+                        if (!empty($n['prof_nom'])) {
+                            echo '<br><i style="font-size: 8px; color: #555;">Enseignant: '.htmlspecialchars($n['prof_nom']).'</i>';
+                        }
+                        echo '</td>';
                         echo '<td>'.number_format($n['credits'], 1, '.', '').'</td>';
                         echo '<td>'.number_format($n['coefficient'], 1, '.', '').'</td>';
                         echo '<td>'.str_pad(number_format($note_val, 2, '.', ''), 5, '0', STR_PAD_LEFT).'</td>';

@@ -23,9 +23,10 @@ $stmt->execute([$user_id]);
 $etudiant = $stmt->fetch();
 
 $query = "
-    SELECT n.note, m.intitule, m.coefficient, m.semestre, m.code_module
+    SELECT n.note, m.intitule, m.coefficient, m.semestre, m.code_module, e.nom as prof_nom, e.prenom as prof_prenom
     FROM notes n 
     JOIN modules m ON n.module_id = m.id 
+    LEFT JOIN enseignants e ON m.enseignant_id = e.id
     WHERE n.etudiant_id = ?
     ORDER BY m.semestre ASC, m.intitule ASC
 ";
@@ -49,12 +50,10 @@ $moy_s1 = $stats[1]['total_coeffs'] > 0 ? $stats[1]['total_points'] / $stats[1][
 $moy_s2 = $stats[2]['total_coeffs'] > 0 ? $stats[2]['total_points'] / $stats[2]['total_coeffs'] : null;
 
 $moy_annuelle = null;
-if ($moy_s1 !== null && $moy_s2 !== null) {
-    $moy_annuelle = ($moy_s1 + $moy_s2) / 2;
-} elseif ($moy_s1 !== null) {
-    $moy_annuelle = $moy_s1;
-} elseif ($moy_s2 !== null) {
-    $moy_annuelle = $moy_s2;
+if ($moy_s1 !== null || $moy_s2 !== null) {
+    $val_s1 = $moy_s1 !== null ? $moy_s1 : 0;
+    $val_s2 = $moy_s2 !== null ? $moy_s2 : 0;
+    $moy_annuelle = ($val_s1 + $val_s2) / 2;
 }
 
 include 'includes/header.php';
@@ -113,7 +112,10 @@ include 'includes/sidebar.php';
                         <?php if (!empty($semestres[1])): ?>
                             <?php foreach ($semestres[1] as $n): ?>
                                 <tr>
-                                    <td><strong><?= htmlspecialchars($n['intitule']) ?></strong></td>
+                                    <td>
+                                        <strong><?= htmlspecialchars($n['intitule']) ?></strong><br>
+                                        <small style="color: #64748b;"><i class="fa-solid fa-user-tie"></i> <?= $n['prof_nom'] ? 'Pr. ' . htmlspecialchars($n['prof_nom']) : 'Enseignant non assigné' ?></small>
+                                    </td>
                                     <td><?= $n['coefficient'] ?></td>
                                     <td style="color: <?= $n['note'] >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>; font-weight: 600;">
                                         <?= number_format($n['note'], 2) ?>
@@ -126,7 +128,7 @@ include 'includes/sidebar.php';
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>   
 
         <!-- SEMESTRE 2 -->
         <div class="semestre-section">
@@ -149,7 +151,10 @@ include 'includes/sidebar.php';
                         <?php if (!empty($semestres[2])): ?>
                             <?php foreach ($semestres[2] as $n): ?>
                                 <tr>
-                                    <td><strong><?= htmlspecialchars($n['intitule']) ?></strong></td>
+                                    <td>
+                                        <strong><?= htmlspecialchars($n['intitule']) ?></strong><br>
+                                        <small style="color: #64748b;"><i class="fa-solid fa-user-tie"></i> <?= $n['prof_nom'] ? 'Pr. ' . htmlspecialchars($n['prof_nom']) : 'Enseignant non assigné' ?></small>
+                                    </td>
                                     <td><?= $n['coefficient'] ?></td>
                                     <td style="color: <?= $n['note'] >= 10 ? 'var(--valid-green)' : 'var(--invalid-red)' ?>; font-weight: 600;">
                                         <?= number_format($n['note'], 2) ?>
@@ -167,7 +172,8 @@ include 'includes/sidebar.php';
 
     <!-- Actions -->
     <div style="margin-top: 25px; display: flex; gap: 15px;">
-        <a href="releve_notes.php" class="btn-add" style="flex: 1; text-align: center; background: #2c3e80;"><i class="fa-solid fa-file-invoice"></i> Télécharger le Relevé Annuel</a>
+        <a href="releve_notes.php" class="btn-add" style="flex: 1; text-align: center; background: #2c3e80;"><i class="fa-solid fa-file-invoice"></i> Relevé Original</a>
+        <a href="releve_notes.php?duplicata=1" class="btn-add" style="flex: 1; text-align: center; background: #e67e22;"><i class="fa-solid fa-copy"></i> Relevé Duplicata</a>
     </div>
 
 </div>

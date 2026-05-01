@@ -36,7 +36,15 @@ CREATE TABLE `enseignants` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `enseignants` VALUES (1,'ENS001','LAACHEMI','Ahmed','laachemi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Programmation Web'),(2,'ENS002','BOUZIDI','Sara','bouzidi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Algorithmes'),(3,'ENS003','HAMDI','Karim','hamdi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Base de Donnees');
+INSERT INTO `enseignants` VALUES 
+(1,'ENS001','LAACHEMI','Ahmed','laachemi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Programmation Web'),
+(2,'ENS002','BOUZIDI','Sara','bouzidi@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Algorithmes'),
+(3,'ENS003','CHEFFAR','Nabila','cheffar@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Bases de Données'),
+(4,'ENS004','AINOUCHE','Hadj','ainouche@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Théorie des Graphes'),
+(5,'ENS005','BELKIR','Zineddine','belkir@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Systèmes d\'Exploitation'),
+(6,'ENS006','COT','Ahmed','cot@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Architecture des Ordinateurs'),
+(7,'ENS007','ABDELLAOUM','Nassima','abdellaoum@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Génie Logiciel'),
+(8,'ENS008','GUERLI','Amel','guerli@usthb.dz','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','Systèmes d\'Exploitation');
 
 CREATE TABLE `modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -53,7 +61,22 @@ CREATE TABLE `modules` (
   CONSTRAINT `modules_ibfk_1` FOREIGN KEY (`enseignant_id`) REFERENCES `enseignants` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `modules` VALUES (6,'IS1','Introduction aux Systèmes d\'Information',3,NULL,1,4,'C'),(7,'ARCHI1','Architecture des Ordinateurs',3,NULL,1,4,'C'),(8,'ALGO3','Algorithmique et structures de données',3,NULL,1,5,'C'),(9,'PROBA','Probabilités et Statistiques',2,NULL,1,4,'C'),(10,'ANUM','Analyse Numérique',2,NULL,1,4,'C'),(11,'LOGIQUE','Logique Mathématique',2,NULL,1,3,'C'),(12,'POO','Programmation Orientée Objet',2,NULL,1,3,'C'),(13,'ANG1','Anglais 1',1,NULL,1,2,'C'),(14,'GL1','Génie Logiciel 1',3,NULL,2,5,'C'),(15,'BD1','Bases de Données : Conception et Langage',3,NULL,2,6,'C'),(16,'ARCHI2','Architecture des ordinateurs 2',3,NULL,2,5,'C'),(17,'SYS1','Système d\'Exploitation 1',3,NULL,2,4,'C'),(18,'THG','Théorie des Graphes',2,NULL,2,4,'C'),(19,'PWEB','Programmation Web',2,NULL,2,4,'C'),(20,'ANG2','Anglais 2',1,NULL,2,2,'C');
+INSERT INTO `modules` VALUES 
+(6,'IS1','Introduction aux Systèmes d\'Information',3,NULL,1,4,'C'),
+(7,'ARCHI1','Architecture des Ordinateurs',3,6,1,4,'C'),
+(8,'ALGO3','Algorithmique et structures de données',3,2,1,5,'C'),
+(9,'PROBA','Probabilités et Statistiques',2,NULL,1,4,'C'),
+(10,'ANUM','Analyse Numérique',2,NULL,1,4,'C'),
+(11,'LOGIQUE','Logique Mathématique',2,NULL,1,3,'C'),
+(12,'POO','Programmation Orientée Objet',2,NULL,1,3,'C'),
+(13,'ANG1','Anglais 1',1,NULL,1,2,'C'),
+(14,'GL1','Génie Logiciel 1',3,7,2,5,'C'),
+(15,'BD1','Bases de Données : Conception et Langage',3,3,2,6,'C'),
+(16,'ARCHI2','Architecture des ordinateurs 2',3,6,2,5,'C'),
+(17,'SYS1','Système d\'Exploitation 1',3,5,2,4,'C'),
+(18,'THG','Théorie des Graphes',2,4,2,4,'C'),
+(19,'PWEB','Programmation Web',2,1,2,4,'C'),
+(20,'ANG2','Anglais 2',1,NULL,2,2,'C');
 
 UNLOCK TABLES;
 
